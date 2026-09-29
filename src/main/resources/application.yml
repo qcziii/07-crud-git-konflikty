@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: biblioteka
+  datasource:
+    url: jdbc:h2:mem:biblioteka
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
