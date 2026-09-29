@@ -18,28 +18,35 @@ public class BookService {
         this.authorService = authorService;
     }
 
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
-
     public Book findById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
+    @Transactional(readOnly = true)
+    public List<BookResponse> findAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(BookResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public BookResponse findBookById(Long id) {
+        return BookResponse.from(findById(id));
+    }
+
     @Transactional
-    public Book create(BookRequest request) {
+    public BookResponse create(BookRequest request) {
         Author author = authorService.findById(request.authorId());
         if (bookRepository.existsByIsbn(request.isbn())) {
             throw new DuplicateIsbnException("Duplikacja isbn: " + request.isbn());
         }
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
-        return bookRepository.save(book);
+        return BookResponse.from(bookRepository.save(book));
     }
 
     @Transactional
     public void delete(Long id) {
-        int i = bookRepository.deleteBookById(id);
-        if (i < 1) {
+        if (bookRepository.deleteBookById(id) < 1) {
             throw new BookNotFoundException(id);
         }
     }

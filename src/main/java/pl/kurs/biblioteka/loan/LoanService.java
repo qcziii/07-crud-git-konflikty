@@ -31,7 +31,7 @@ public class LoanService {
     @Transactional
     public LoanResponse borrow(Long bookId, String readerEmail) {
 
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
         }
 

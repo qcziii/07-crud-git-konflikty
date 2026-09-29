@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthorNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleLoanAuthorNotFoundException(AuthorNotFoundException exception) {
+    public ResponseEntity<ErrorResponse> handleAuthorNotFoundException(AuthorNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(exception.getClass().getSimpleName(), exception.getMessage()));
     }

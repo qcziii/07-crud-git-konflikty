@@ -25,18 +25,17 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAll() {
-        List<Book> books = bookService.findAll();
-        return ResponseEntity.ok().body(books.stream().map(BookResponse::from).toList());
+        return ResponseEntity.ok(bookService.findAllBooks());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(BookResponse.from(bookService.findById(id)));
+        return ResponseEntity.ok(bookService.findBookById(id));
     }
 
     @PostMapping
     public ResponseEntity<BookResponse> create(@RequestBody @Valid BookRequest request) {
-        BookResponse response = BookResponse.from(bookService.create(request));
+        BookResponse response = bookService.create(request);
         return ResponseEntity.created(URI.create("/books/" + response.id())).body(response);
     }
 
