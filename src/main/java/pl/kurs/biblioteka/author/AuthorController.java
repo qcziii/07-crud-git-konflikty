@@ -1,7 +1,6 @@
 package pl.kurs.biblioteka.author;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -34,7 +34,7 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity<AuthorResponse> create(@RequestBody @Valid AuthorRequest request) {
-        Author authorResponse = authorService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(AuthorResponse.fromAuthor(authorResponse));
+        AuthorResponse response = AuthorResponse.fromAuthor(authorService.create(request));
+        return ResponseEntity.created(URI.create("/authors/" + response.id())).body(response);
     }
 }
