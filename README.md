@@ -25,7 +25,7 @@ curl -i http://localhost:8080/authors/1
 curl -i http://localhost:8080/books
 curl -i -X POST http://localhost:8080/books \
      -H 'Content-Type: application/json' \
-     -d '{"title":"Pokój","isbn":"978-83-00-00000-1","availableCopies":2,"authorId":1}'
+     -d '{"title":"Pokój","isbn":"978-83-00-00000-1","availableCopies":2,"publicationYear":2024,"authorId":1}'
 curl -i -X POST http://localhost:8080/loans \
      -H 'Content-Type: application/json' \
      -d '{"bookId":3,"readerEmail":"jan@example.com"}'

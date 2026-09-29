@@ -29,7 +29,8 @@ public class BookService {
     @Transactional
     public Book create(BookRequest request) {
         Author author = authorService.findById(request.authorId());
-        Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
+        Book book = new Book(request.title(), request.isbn(), request.availableCopies(),
+                request.publicationYear(), author);
         return bookRepository.save(book);
     }
 

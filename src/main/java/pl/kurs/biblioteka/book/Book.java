@@ -23,16 +23,19 @@ public class Book {
 
     private int availableCopies;
 
+    private Integer publicationYear;
+
     @ManyToOne(optional = false)
     private Author author;
 
     protected Book() {
     }
 
-    public Book(String title, String isbn, int availableCopies, Author author) {
+    public Book(String title, String isbn, int availableCopies, Integer publicationYear, Author author) {
         this.title = title;
         this.isbn = isbn;
         this.availableCopies = availableCopies;
+        this.publicationYear = publicationYear;
         this.author = author;
     }
 
@@ -58,6 +61,10 @@ public class Book {
 
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public Integer getPublicationYear() {
+        return publicationYear;
     }
 
     public Author getAuthor() {

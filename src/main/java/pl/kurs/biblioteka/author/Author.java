@@ -21,14 +21,17 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
+    private Integer birthYear;
+
     @OneToMany(mappedBy = "author")
     private List<Book> books = new ArrayList<>();
 
     protected Author() {
     }
 
-    public Author(String name) {
+    public Author(String name, Integer birthYear) {
         this.name = name;
+        this.birthYear = birthYear;
     }
 
     public Long getId() {
@@ -41,6 +44,14 @@ public class Author {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(Integer birthYear) {
+        this.birthYear = birthYear;
     }
 
     public List<Book> getBooks() {

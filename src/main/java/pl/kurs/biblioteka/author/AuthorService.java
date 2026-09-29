@@ -24,6 +24,6 @@ public class AuthorService {
 
     @Transactional
     public Author create(AuthorRequest request) {
-        return authorRepository.save(new Author(request.name()));
+        return authorRepository.save(new Author(request.name(), request.birthYear()));
     }
 }

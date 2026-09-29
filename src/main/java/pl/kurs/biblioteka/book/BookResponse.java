@@ -7,6 +7,7 @@ public record BookResponse(
         String title,
         String isbn,
         int availableCopies,
+        Integer publicationYear,
         Author author
 ) {
     public static BookResponse from(Book book) {
@@ -15,6 +16,7 @@ public record BookResponse(
                 book.getTitle(),
                 book.getIsbn(),
                 book.getAvailableCopies(),
+                book.getPublicationYear(),
                 book.getAuthor()
         );
     }
