@@ -23,18 +23,24 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id).get();
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Transactional
     public Book create(BookRequest request) {
         Author author = authorService.findById(request.authorId());
+        if (bookRepository.existsByIsbn(request.isbn())) {
+            throw new DuplicateIsbnException("Duplikacja isbn: " + request.isbn());
+        }
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
         return bookRepository.save(book);
     }
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        int i = bookRepository.deleteBookById(id);
+        if (i < 1) {
+            throw new BookNotFoundException(id);
+        }
     }
 }

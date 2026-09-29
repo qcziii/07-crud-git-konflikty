@@ -19,7 +19,19 @@ public class AuthorService {
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException("Nie znaleziono autora o id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AuthorResponse> findAllAuthors() {
+        return authorRepository.findAll().stream()
+                .map(AuthorResponse::fromAuthor)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public AuthorResponse findAuthorById(Long id) {
+        return AuthorResponse.fromAuthor(findById(id));
     }
 
     @Transactional
