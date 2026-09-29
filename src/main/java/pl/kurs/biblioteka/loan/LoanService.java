@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.loan;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
@@ -12,14 +13,16 @@ import java.util.List;
 @Service
 public class LoanService {
 
-    private static final int MAX_LOANS_PER_READER = 3;
-
     private final LoanRepository loanRepository;
     private final BookService bookService;
+    private final int maxLoansPerReader;
 
-    public LoanService(LoanRepository loanRepository, BookService bookService) {
+    public LoanService(LoanRepository loanRepository,
+                       BookService bookService,
+                       @Value("${biblioteka.wypozyczenia.limit-na-czytelnika}") int maxLoansPerReader) {
         this.loanRepository = loanRepository;
         this.bookService = bookService;
+        this.maxLoansPerReader = maxLoansPerReader;
     }
 
     public List<Loan> findByReader(String readerEmail) {
@@ -35,8 +38,9 @@ public class LoanService {
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
 
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
-            throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
+        long activeLoans = loanRepository.countByReaderEmail(readerEmail);
+        if (activeLoans > maxLoansPerReader) {
+            throw new LoanLimitExceededException(readerEmail, maxLoansPerReader);
         }
         return loan;
     }
