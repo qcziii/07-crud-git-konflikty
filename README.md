@@ -61,7 +61,7 @@ Dodatkowo:
 
 ## Wymagania do rozwiązania
 
-1. Napraw wszystkie trzy zgłoszenia. Zanim zaczniesz poprawiać, odtwórz każdy problem (`curl`, test) i zrozum jego przyczynę. W opisie PR-a napisz w 1-2 zdaniach, co było przyczyną każdego z nich.
+1. Napraw wszystkie trzy zgłoszenia. Zanim zaczniesz poprawiać, odtwórz każdy problem (`curl`, test, postman) i zrozum jego przyczynę. W opisie PR-a napisz w 1-2 zdaniach, co było przyczyną każdego z nich.
 2. Dopisz testy, które pilnują naprawionego zachowania. Minimum:
    - testy statusów HTTP dla ścieżek z tabeli powyżej (np. `MockMvc`),
    - test, który udowadnia, że wypożyczenie ponad limit **nie zmienia** stanu bazy.
@@ -69,13 +69,10 @@ Dodatkowo:
 
 ## Jak oddać zadanie
 
-1. Zrób **fork** tego repozytorium i sklonuj swój fork. Dodaj oryginalne repo jako `upstream`:
-   ```bash
-   git remote add upstream https://github.com/qcziii/07-crud-git-konflikty.git
-   ```
-2. Utwórz własny branch od `master`, np. `jan-kowalski/poprawki-api`. Nie commituj bezpośrednio na `master`.
-3. Pracuj małymi commitami z sensownymi opisami (jedna poprawka = jeden commit to dobra zasada).
-4. Wypchnij branch do swojego forka i otwórz **Pull Request** do `master` w tym repozytorium. W opisie PR-a: co było nie tak, co zmieniłeś, jak to sprawdziłeś.
-5. Odpowiadaj na komentarze z review, poprawki dopychaj kolejnymi commitami na ten sam branch.
+
+1. Utwórz własny branch od `master`, np. `jan-kowalski/poprawki-api`. Nie commituj bezpośrednio na `master`.
+2. Pracuj małymi commitami z sensownymi opisami (jedna poprawka = jeden commit to dobra zasada).
+3. Wypchnij branch do swojego forka i otwórz **Pull Request** do `master` w tym repozytorium. W opisie PR-a: co było nie tak, co zmieniłeś, jak to sprawdziłeś.
+4. Odpowiadaj na komentarze z review, poprawki dopychaj kolejnymi commitami na ten sam branch.
 
 **Uwaga:** w trakcie review na `master` mogą trafić zmiany innych osób z zespołu, tak jak w każdym prawdziwym projekcie. PR zostanie zmergowany tylko wtedy, gdy nie ma konfliktów i testy przechodzą. Jeśli GitHub pokaże konflikty, pobierz najnowszy `master` z `upstream`, scal go ze swoim branchem (merge albo rebase), rozwiąż konflikty tak, żeby **nie zgubić ani swoich poprawek, ani zmian kolegów**, uruchom testy i wypchnij wynik.
