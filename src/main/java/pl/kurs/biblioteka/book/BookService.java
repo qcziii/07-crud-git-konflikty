@@ -1,7 +1,9 @@
 package pl.kurs.biblioteka.book;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorService;
 
@@ -23,7 +25,10 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id).get();
+
+
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookDoesNotExistException("book does not exist"));
     }
 
     @Transactional
