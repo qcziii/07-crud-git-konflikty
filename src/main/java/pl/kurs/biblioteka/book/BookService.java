@@ -1,9 +1,7 @@
 package pl.kurs.biblioteka.book;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorService;
 
@@ -25,14 +23,24 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-
-
         return bookRepository.findById(id)
-                .orElseThrow(() -> new BookDoesNotExistException("book does not exist"));
+                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
     }
 
     @Transactional
     public Book create(BookRequest request) {
+        if (request.title() == null || request.title().isEmpty()) {
+            throw new BookValidationException("Specified book title is null or empty");
+        }
+
+        List<String> isbns = bookRepository.findAll()
+                .stream()
+                .map(Book::getIsbn)
+                .toList();
+        if (isbns.contains(request.isbn())) {
+            throw new BookValidationException("Specified ISBN number already exists");
+        }
+
         Author author = authorService.findById(request.authorId());
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
         return bookRepository.save(book);
@@ -40,6 +48,10 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+        } else {
+            throw new BookDoesNotExistException("Book with id " + id + " does not exist");
+        }
     }
 }

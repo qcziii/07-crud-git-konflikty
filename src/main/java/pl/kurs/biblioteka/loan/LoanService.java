@@ -26,7 +26,7 @@ public class LoanService {
     }
 
     @Transactional
-    public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
+    public Loan borrow(Long bookId, String readerEmail) {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
             throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
@@ -42,6 +42,7 @@ public class LoanService {
 
     @Transactional
     public void giveBack(Long loanId) {
+        //todo poprawic
         Loan loan = loanRepository.findById(loanId).get();
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);

@@ -22,13 +22,16 @@ public class LoanController {
     }
 
     @GetMapping
-    public List<Loan> getByReader(@RequestParam String readerEmail) {
-        return loanService.findByReader(readerEmail);
+    public List<LoanResponse> getByReader(@RequestParam String readerEmail) {
+        return loanService.findByReader(readerEmail)
+                .stream()
+                .map(LoanResponse::from)
+                .toList();
     }
 
     @PostMapping
-    public Loan borrow(@RequestBody LoanRequest request) throws LoanLimitExceededException {
-        return loanService.borrow(request.bookId(), request.readerEmail());
+    public LoanResponse borrow(@RequestBody LoanRequest request) {
+        return LoanResponse.from(loanService.borrow(request.bookId(), request.readerEmail()));
     }
 
     @DeleteMapping("/{id}")

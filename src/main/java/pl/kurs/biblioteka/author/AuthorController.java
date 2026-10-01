@@ -1,10 +1,12 @@
 package pl.kurs.biblioteka.author;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,7 +34,9 @@ public class AuthorController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthorResponse create(@RequestBody AuthorRequest request) {
+        //todo zapytać na zajęciach czy to jest poprawne i co to znaczy "nie wiem, pod jakim adresem go szukać"
         return AuthorResponse.from(authorService.create(request));
     }
 }
