@@ -24,13 +24,13 @@ public class BookService {
 
     public Book findById(Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new BookDoesNotExistException("Book with id " + id + " does not exist"));
+                .orElseThrow(() -> new BookDoesNotExistsException("Book with id " + id + " does not exist"));
     }
 
     @Transactional
     public Book create(BookRequest request) {
         if (request.title() == null || request.title().isEmpty()) {
-            throw new BookValidationException("Specified book title is null or empty");
+            throw new BookBadRequestException("Specified book title is null or empty");
         }
 
         List<String> isbns = bookRepository.findAll()
@@ -51,7 +51,7 @@ public class BookService {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
         } else {
-            throw new BookDoesNotExistException("Book with id " + id + " does not exist");
+            throw new BookDoesNotExistsException("Book with id " + id + " does not exist");
         }
     }
 }

@@ -42,8 +42,8 @@ public class LoanService {
 
     @Transactional
     public void giveBack(Long loanId) {
-        //todo poprawic
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new LoanDoesNotExistsException("Loan with id " + loanId + " does not exist"));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);

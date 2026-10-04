@@ -19,11 +19,15 @@ public class AuthorService {
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorDoesNotExistsException("Author with id " + id + " does not exist"));
     }
 
     @Transactional
     public Author create(AuthorRequest request) {
+        if (request.name() == null || request.name().isEmpty()) {
+            throw new AuthorValidationException("Specified author name is null or empty");
+        }
         return authorRepository.save(new Author(request.name()));
     }
 }
