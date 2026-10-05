@@ -1,6 +1,5 @@
 package pl.kurs.biblioteka.book;
 
-import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorDto;
 
 public record BookResponse(

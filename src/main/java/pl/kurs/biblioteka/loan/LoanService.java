@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.biblioteka.exception.LoanNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +46,7 @@ public class LoanService {
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId).orElseThrow(LoanNotFoundException::new);
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);

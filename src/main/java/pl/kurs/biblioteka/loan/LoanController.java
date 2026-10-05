@@ -1,5 +1,7 @@
 package pl.kurs.biblioteka.loan;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +34,8 @@ public class LoanController {
     }
 
     @DeleteMapping("/{id}")
-    public void giveBack(@PathVariable Long id) {
+    public ResponseEntity<Void> giveBack(@PathVariable Long id) {
         loanService.giveBack(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
