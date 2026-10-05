@@ -28,10 +28,10 @@ public class LoanService {
     @Transactional
     public Loan borrow(Long bookId, String readerEmail) {
         Book book = bookService.findById(bookId);
-        if (book.getAvailableCopies() == 0) {
+        if (book.getAvailableCopies() <= 0) {
             throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
         }
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
         }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
