@@ -31,13 +31,11 @@ public class LoanService {
         if (book.getAvailableCopies() == 0) {
             throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
         }
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
-        Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
-
         if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
         }
-        return loan;
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        return loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
     }
 
     @Transactional

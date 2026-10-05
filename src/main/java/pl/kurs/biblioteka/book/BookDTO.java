@@ -1,7 +1,5 @@
 package pl.kurs.biblioteka.book;
 
-import pl.kurs.biblioteka.author.Author;
-
 public record BookDTO(Long id,
                       String title,
                       String isbn,

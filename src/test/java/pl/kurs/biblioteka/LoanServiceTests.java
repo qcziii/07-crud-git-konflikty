@@ -33,6 +33,7 @@ public class LoanServiceTests {
     @Test
     void shouldDoesNotChangeDatabaseAfterLoanExceedLimit() {
         //test, który udowadnia, że wypożyczenie ponad limit nie zmienia stanu bazy.
+        //todo czy na pewno dobrze
         String readerEmail = "test@wp.pl";
         Book book = new Book("Czarny Łabędź", "0123", 2, new Author("Nassim Nicholas Taleb"));
         when(bookService.findById(1L)).thenReturn(book);
