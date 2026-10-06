@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.loan;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static java.net.URI.create;
 
 @RestController
 @RequestMapping("/loans")
@@ -29,8 +32,9 @@ public class LoanController {
     }
 
     @PostMapping
-    public LoanResponse borrow(@RequestBody LoanRequest request) throws LoanLimitExceededException {
-        return loanService.borrow(request.bookId(), request.readerEmail());
+    public ResponseEntity<LoanResponse> borrow(@RequestBody @Valid LoanRequest request) throws LoanLimitExceededException {
+        LoanResponse response = loanService.borrow(request.bookId(), request.readerEmail());
+        return ResponseEntity.created(create("/loans/" + response.id())).body(response);
     }
 
     @DeleteMapping("/{id}")

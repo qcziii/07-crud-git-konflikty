@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,12 +74,14 @@ class BookControllerTest {
                         .content(objectMapper.writeValueAsString(bookRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("Lalka"))
-                .andExpect(jsonPath("$.isbn").value("888-99966-000"));
+                .andExpect(jsonPath("$.isbn").value("888-99966-000"))
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", "/books/4"));
 
     }
 
     @Test
-    void shouldNotCreateBookWithEmptyTitle() throws Exception {
+    void shouldNotCreateBookBookWithEmptyTitle() throws Exception {
         // given
         BookRequest bookRequest = new BookRequest("", "888-999666666-000", 5, 2L);
 

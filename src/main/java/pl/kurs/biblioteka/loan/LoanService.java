@@ -29,7 +29,7 @@ public class LoanService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = LoanLimitExceededException.class)
     public LoanResponse borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
@@ -46,7 +46,7 @@ public class LoanService {
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).orElseThrow(LoanNotFoundException::new);
+        Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new LoanNotFoundException("Loan not found with id: " + loanId + "!"));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);

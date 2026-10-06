@@ -1,7 +1,6 @@
 package pl.kurs.biblioteka.common;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,9 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.kurs.biblioteka.exception.AuthorNotFoundException;
 import pl.kurs.biblioteka.exception.BookNotFoundException;
 import pl.kurs.biblioteka.exception.LoanNotFoundException;
-import pl.kurs.biblioteka.exception.NotFoundObjectToDeleteException;
-
-import java.util.Map;
+import pl.kurs.biblioteka.loan.LoanLimitExceededException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,7 +33,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(LoanNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleLoanNotFoundException(LoanNotFoundException e) {
+    public String handleLoanNotFoundException(LoanNotFoundException e) {
+        return e.getMessage();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -44,9 +42,15 @@ public class GlobalExceptionHandler {
     public String handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         return "Data integrity violation conflict";
     }
+    @ExceptionHandler(LoanLimitExceededException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String LoanLimitExceededException(LoanLimitExceededException e) {
+        return e.getMessage();
+    }
 
-    @ExceptionHandler(NotFoundObjectToDeleteException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleNotFoundObjectToDeleteException(NotFoundObjectToDeleteException e) {}
-
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String IllegalStateException(IllegalStateException e) {
+        return e.getMessage();
+    }
 }

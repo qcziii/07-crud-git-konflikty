@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static java.net.URI.create;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -36,8 +38,9 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookResponse> create(@RequestBody @Valid BookRequest request) {
-        return new ResponseEntity<>(BookResponse.from(bookService.create(request)), HttpStatus.CREATED);
+    public ResponseEntity<BookResponse> createBook(@RequestBody @Valid BookRequest request) {
+        BookResponse response = BookResponse.from(bookService.create(request));
+        return ResponseEntity.created(create("/books/" + response.id())).body(response);
     }
 
     @DeleteMapping("/{id}")
