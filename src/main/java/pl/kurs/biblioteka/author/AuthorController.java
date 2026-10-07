@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.author;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +39,8 @@ public class AuthorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthorResponse> create(@RequestBody AuthorRequest request) {
-        //todo zapytać na zajęciach czy to jest poprawne
+    public ResponseEntity<AuthorResponse> create(@RequestBody @Valid AuthorRequest request) {
+
         Author created = authorService.create(request);
 
         URI location = ServletUriComponentsBuilder

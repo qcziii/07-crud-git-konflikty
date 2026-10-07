@@ -86,7 +86,7 @@ public class BookControllerTests {
     void shouldCreateBookWithLocation() throws Exception {
         BookRequest request = new BookRequest("Czarny Łabędź", "0123", 2, 1L);
         Book book = new Book("Czarny Łabędź", "0123", 2, new Author("Nassim Nicholas Taleb"));
-        //todo zapytać na zajęciach czy to jest poprawne
+
         ReflectionTestUtils.setField(book, "id", 1L);
         when(bookService.create(request)).thenReturn(book);
 

@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.book;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +39,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookResponse> create(@RequestBody BookRequest request) {
+    public ResponseEntity<BookResponse> create(@RequestBody @Valid BookRequest request) {
         Book created = bookService.create(request);
 
         URI location = ServletUriComponentsBuilder

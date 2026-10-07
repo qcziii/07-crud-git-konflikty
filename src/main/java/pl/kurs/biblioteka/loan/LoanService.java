@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.biblioteka.book.BookValidationException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,7 +30,7 @@ public class LoanService {
     public Loan borrow(Long bookId, String readerEmail) {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() <= 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
+            throw new BookValidationException("Brak wolnych egzemplarzy książki " + book.getTitle());
         }
         if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);

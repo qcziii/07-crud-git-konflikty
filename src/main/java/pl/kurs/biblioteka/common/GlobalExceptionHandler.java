@@ -18,9 +18,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handle(Exception e) {
-        return Map.of("Error", String.valueOf(e.getMessage()));
+        return Map.of("Error", "Unexpected server error");
     }
 
     @ExceptionHandler(BookDoesNotExistsException.class)

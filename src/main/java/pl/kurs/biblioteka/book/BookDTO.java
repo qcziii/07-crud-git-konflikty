@@ -12,7 +12,7 @@ public record BookDTO(Long id,
                 book.getTitle(),
                 book.getIsbn(),
                 book.getAvailableCopies(),
-                book.getId()
+                book.getAuthor().getId()
         );
     }
 }

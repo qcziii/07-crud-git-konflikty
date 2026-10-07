@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.loan;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,7 +36,7 @@ public class LoanController {
     }
 
     @PostMapping
-    public ResponseEntity<LoanResponse> borrow(@RequestBody LoanRequest request) {
+    public ResponseEntity<LoanResponse> borrow(@RequestBody @Valid LoanRequest request) {
         Loan created = loanService.borrow(request.bookId(), request.readerEmail());
 
         URI location = ServletUriComponentsBuilder

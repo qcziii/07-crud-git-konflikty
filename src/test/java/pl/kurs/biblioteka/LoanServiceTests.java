@@ -8,8 +8,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.biblioteka.loan.Loan;
+import pl.kurs.biblioteka.loan.LoanLimitExceededException;
 import pl.kurs.biblioteka.loan.LoanRepository;
 import pl.kurs.biblioteka.loan.LoanService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,18 +38,23 @@ public class LoanServiceTests {
     @Test
     void shouldDoesNotChangeDatabaseAfterLoanExceedLimit() {
         //test, który udowadnia, że wypożyczenie ponad limit nie zmienia stanu bazy.
-        //todo czy na pewno dobrze
+        //given
         String readerEmail = "test@wp.pl";
-        Book book = new Book("Czarny Łabędź", "0123", 2, new Author("Nassim Nicholas Taleb"));
+        Book book = new Book("Czarny Łabędź", "0123", 5, new Author("Nassim Nicholas Taleb"));
         when(bookService.findById(1L)).thenReturn(book);
+        List<Loan> loans = new ArrayList<>();
+        loans.add(loanService.borrow(1L, readerEmail));
+        loans.add(loanService.borrow(1L, readerEmail));
+        loans.add(loanService.borrow(1L, readerEmail));
 
-        loanService.borrow(1L, readerEmail);
-        loanService.borrow(1L, readerEmail);
+        //when
+        when(loanRepository.countByReaderEmail(readerEmail)).thenReturn(loans.stream().count());
 
-        assertThrows(IllegalStateException.class,
+        //then
+        assertThrows(LoanLimitExceededException.class,
                 () -> loanService.borrow(1L, readerEmail),
-                "Brak wolnych egzemplarzy książki " + book.getTitle());
-        assertEquals(0, book.getAvailableCopies());
-        verify(loanRepository, times(2)).save(any());
+                "Czytelnik " + readerEmail + " przekroczył limit 3 wypożyczeń");
+        assertEquals(3, loanRepository.countByReaderEmail(readerEmail));
+        verify(loanRepository, times(3)).save(any());
     }
 }

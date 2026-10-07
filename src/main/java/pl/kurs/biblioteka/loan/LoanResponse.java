@@ -8,7 +8,7 @@ public record LoanResponse(
         Long id,
         BookDTO bookDTO,
         String readerEmail,
-        LocalDate LoanDate
+        LocalDate loanDate
 ) {
     public static LoanResponse from(Loan loan) {
         return new LoanResponse(
