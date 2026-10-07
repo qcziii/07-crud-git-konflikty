@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.book;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
+
+import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -76,7 +79,7 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.title").value("Lalka"))
                 .andExpect(jsonPath("$.isbn").value("888-99966-000"))
                 .andExpect(header().exists("Location"))
-                .andExpect(header().string("Location", "/books/4"));
+                .andExpect(header().string("Location", Matchers.matchesPattern("/books/\\d+")));
 
     }
 

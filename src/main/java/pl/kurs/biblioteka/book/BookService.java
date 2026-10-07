@@ -6,7 +6,6 @@ import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorRepository;
 import pl.kurs.biblioteka.author.AuthorService;
 import pl.kurs.biblioteka.exception.BookNotFoundException;
-import pl.kurs.biblioteka.exception.NotFoundObjectToDeleteException;
 
 import java.util.List;
 

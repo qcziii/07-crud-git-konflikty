@@ -58,8 +58,19 @@ class AuthorControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Mariusz Leming"))
-                .andExpect(header().exists("Location"))
-                .andExpect(header().string("Location", "/authors/3"));
+                .andExpect(header().exists("Location"));
+    }
+
+    @Test
+    void shouldGiveStatusBadRequestWhenCreatingAuthorWithEmptyName() throws Exception {
+        //given
+        AuthorRequest request = new AuthorRequest("");
+
+        //when
+        postman.perform(post("/authors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
 

@@ -6,9 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+import pl.kurs.biblioteka.author.AuthorRequest;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookRequest;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -112,17 +115,21 @@ class LoanControllerTest {
     @Test
     void shouldGive409StatusWhenThereIsNoAvailablePieces() throws Exception {
         // given
-        Long bookId = 4L;
         String readerEmail = "test2424@gmail.com";
 
         BookRequest bookRequest = new BookRequest("Maly Ksiaze", "999-000-242", 0, 2L);
-        LoanRequest loanRequest = new LoanRequest(bookId, readerEmail);
 
         // when
-        postman.perform(post("/books")
+        MvcResult mvcResult = postman.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookRequest)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        JsonNode json = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+        Long id = json.get("id").asLong();
+
+        LoanRequest loanRequest = new LoanRequest(id, readerEmail);
 
         // then
         postman.perform(post("/loans")
@@ -130,6 +137,7 @@ class LoanControllerTest {
                         .content(objectMapper.writeValueAsString(loanRequest)))
                 .andExpect(status().isConflict());
     }
+
 
     @Test
     void shouldGive409StatusWhenUserHasAlreadyMaximumAvailableLoans() throws Exception {
@@ -163,5 +171,20 @@ class LoanControllerTest {
 
         postman.perform(get("/loans").param("readerEmail","test2424@gmail.com"))
                 .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    void shouldGiveStatusBadRequestWhenPostingLoanWithEmptyName() throws Exception {
+        //given
+        Long bookId = 3L;
+        String readerEmail = "";
+
+        LoanRequest loanRequest = new LoanRequest(bookId, readerEmail);
+
+        //when
+        postman.perform(post("/loans")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loanRequest)))
+                .andExpect(status().isBadRequest());
     }
 }
