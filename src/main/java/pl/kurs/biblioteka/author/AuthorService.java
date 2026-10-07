@@ -14,12 +14,14 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Author> findAll() {
-        return authorRepository.findAll();
+        return authorRepository.findAllWithBooks();
     }
 
+    @Transactional(readOnly = true)
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findByIdWithBooks(id).get();
     }
 
     @Transactional
