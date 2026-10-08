@@ -2,6 +2,7 @@ package pl.kurs.biblioteka.author;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.kurs.biblioteka.common.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class AuthorService {
 
     @Transactional(readOnly = true)
     public Author findById(Long id) {
-        return authorRepository.findByIdWithBooks(id).get();
+        return authorRepository.findByIdWithBooks(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono autora o id " + id));
     }
 
     @Transactional

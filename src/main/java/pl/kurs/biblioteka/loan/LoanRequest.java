@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record LoanRequest(
-        @NotNull Long bookId,
-        @NotBlank @Email String readerEmail
+        @NotNull(message = "Identyfikator książki jest wymagany") Long bookId,
+        @NotBlank(message = "Email czytelnika jest wymagany")
+        @Email(message = "Email czytelnika jest niepoprawny") String readerEmail
 ) {
 }

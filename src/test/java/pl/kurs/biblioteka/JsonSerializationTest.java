@@ -64,7 +64,7 @@ class JsonSerializationTest {
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"bookId\":1,\"readerEmail\":\"json-cycle@example.com\"}"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.book.id").exists())
                 .andExpect(jsonPath("$.book.title").exists())
                 .andExpect(jsonPath("$.book.author").doesNotExist());
