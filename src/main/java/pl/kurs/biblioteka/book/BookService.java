@@ -9,7 +9,7 @@ import pl.kurs.biblioteka.common.ResourceNotFoundException;
 import java.util.List;
 
 @Service
-public class BookService {
+public class    BookService {
 
     private final BookRepository bookRepository;
     private final AuthorService authorService;
@@ -24,7 +24,7 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id)
+        return bookRepository.findLockedById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono książki o id " + id));
     }
 

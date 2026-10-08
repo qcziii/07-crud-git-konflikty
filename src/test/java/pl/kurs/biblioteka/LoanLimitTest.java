@@ -41,7 +41,7 @@ class LoanLimitTest {
         borrow(bookId, READER).andExpect(status().isCreated());
 
         long loansBefore = loanRepository.countByReaderEmail(READER);
-        int copiesBefore = bookRepository.findById(bookId).orElseThrow().getAvailableCopies();
+        int copiesBefore = bookRepository.findLockedById(bookId).orElseThrow().getAvailableCopies();
         assertThat(loansBefore).isEqualTo(3);
         assertThat(copiesBefore).isEqualTo(2);
 
@@ -51,7 +51,7 @@ class LoanLimitTest {
                         "Czytelnik " + READER + " przekroczył limit 3 wypożyczeń"));
 
         assertThat(loanRepository.countByReaderEmail(READER)).isEqualTo(loansBefore);
-        assertThat(bookRepository.findById(bookId).orElseThrow().getAvailableCopies())
+        assertThat(bookRepository.findLockedById(bookId).orElseThrow().getAvailableCopies())
                 .isEqualTo(copiesBefore);
 
         mockMvc.perform(get("/loans").param("readerEmail", READER))

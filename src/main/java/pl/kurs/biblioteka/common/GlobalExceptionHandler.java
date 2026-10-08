@@ -51,6 +51,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleDataIntegrity() {
-        return Map.of("blad", "Nie można zapisać zasobu, ponieważ narusza unikalne ograniczenie");
+        return Map.of("blad", "Nie można wykonać operacji z powodu konfliktu danych");
     }
 }
