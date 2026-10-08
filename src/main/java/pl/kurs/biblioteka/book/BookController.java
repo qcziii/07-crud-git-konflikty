@@ -1,5 +1,7 @@
 package pl.kurs.biblioteka.book;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,23 +25,30 @@ public class BookController {
 
     @GetMapping
     public List<BookResponse> getAll() {
-        return bookService.findAll().stream()
-                .map(BookResponse::from)
-                .toList();
+        return bookService.findAll();
     }
 
     @GetMapping("/{id}")
     public BookResponse getById(@PathVariable Long id) {
-        return BookResponse.from(bookService.findById(id));
+        return bookService.findById(id);
     }
 
     @PostMapping
-    public BookResponse create(@RequestBody BookRequest request) {
-        return BookResponse.from(bookService.create(request));
+    public ResponseEntity<BookResponse> create(@Valid @RequestBody BookRequest request) {
+
+        BookResponse createdBook = bookService.create(request);
+
+        URI location = URI.create("/books/" + createdBook.id());
+
+        return ResponseEntity
+                .created(location)
+                .body(createdBook);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

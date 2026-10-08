@@ -6,10 +6,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.kurs.biblioteka.book.Book;
 
 import java.time.LocalDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 public class Loan {
 
@@ -26,28 +36,4 @@ public class Loan {
     @Column(nullable = false)
     private LocalDate loanDate;
 
-    protected Loan() {
-    }
-
-    public Loan(Book book, String readerEmail, LocalDate loanDate) {
-        this.book = book;
-        this.readerEmail = readerEmail;
-        this.loanDate = loanDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public String getReaderEmail() {
-        return readerEmail;
-    }
-
-    public LocalDate getLoanDate() {
-        return loanDate;
-    }
 }
