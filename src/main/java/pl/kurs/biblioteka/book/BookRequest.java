@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record BookRequest(
-        @NotBlank String title,
-        @NotBlank String isbn,
-        @Min(0) int availableCopies,
-        @NotNull Long authorId
+        @NotBlank(message = "Tytuł nie może być pusty") String title,
+        @NotBlank(message = "ISBN nie może być pusty") String isbn,
+        @Min(value = 0, message = "Liczba egzemplarzy nie może być ujemna") int availableCopies,
+        @NotNull(message = "Identyfikator autora jest wymagany") Long authorId
 ) {
 }
