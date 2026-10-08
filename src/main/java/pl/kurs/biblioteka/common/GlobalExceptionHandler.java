@@ -38,15 +38,13 @@ public class GlobalExceptionHandler {
         return Map.of("blad", "Niepoprawne dane żądania");
     }
 
-    @ExceptionHandler({DuplicateIsbnException.class, NoAvailableCopiesException.class})
+    @ExceptionHandler({
+            DuplicateIsbnException.class,
+            NoAvailableCopiesException.class,
+            LoanLimitExceededException.class
+    })
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleConflict(RuntimeException e) {
-        return Map.of("blad", e.getMessage());
-    }
-
-    @ExceptionHandler(LoanLimitExceededException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleLoanLimit(LoanLimitExceededException e) {
         return Map.of("blad", e.getMessage());
     }
 
