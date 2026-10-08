@@ -6,8 +6,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.kurs.biblioteka.author.Author;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Book {
 
@@ -26,41 +36,4 @@ public class Book {
     @ManyToOne(optional = false)
     private Author author;
 
-    protected Book() {
-    }
-
-    public Book(String title, String isbn, int availableCopies, Author author) {
-        this.title = title;
-        this.isbn = isbn;
-        this.availableCopies = availableCopies;
-        this.author = author;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public int getAvailableCopies() {
-        return availableCopies;
-    }
-
-    public void setAvailableCopies(int availableCopies) {
-        this.availableCopies = availableCopies;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
 }
