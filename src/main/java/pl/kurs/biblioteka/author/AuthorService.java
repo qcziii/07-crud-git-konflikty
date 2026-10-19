@@ -19,7 +19,8 @@ public class AuthorService {
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException(String.format("Autor o id %d nie istnieje", id)));
     }
 
     @Transactional
