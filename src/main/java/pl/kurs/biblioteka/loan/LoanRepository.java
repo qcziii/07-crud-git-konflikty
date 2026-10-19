@@ -9,4 +9,5 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     List<Loan> findByReaderEmail(String readerEmail);
 
     long countByReaderEmail(String readerEmail);
+
 }

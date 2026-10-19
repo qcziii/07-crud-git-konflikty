@@ -29,20 +29,20 @@ public class LoanService {
     public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
+            throw new NoAvailableCopiesException(String.format("Brak wolnych egzemplarzy książki %s", book.getTitle()));
+        }
+
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
+            throw new LoanLimitExceededException(String.format("Czytelnik %s przekroczył limit %d wypożyczeń", readerEmail, MAX_LOANS_PER_READER));
         }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
-        Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
-
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
-            throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
-        }
-        return loan;
+        return loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
     }
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new LoanNotFoundException(String.format("Wypożyczenie o id %d nie istnieje", loanId)));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);
