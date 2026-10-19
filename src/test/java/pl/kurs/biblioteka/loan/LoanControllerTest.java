@@ -17,6 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -406,4 +407,107 @@ class LoanControllerTest {
                 .andExpect(jsonPath("$.availableCopies").value(2));
     }
 
+    @Test
+    void shouldAllowThirdLoan() throws Exception {
+        //given
+        loanRepository.save(new Loan(book, READER_EMAIL, LocalDate.now()));
+        loanRepository.save(new Loan(book, READER_EMAIL, LocalDate.now()));
+
+        book.setAvailableCopies(2);
+        bookRepository.save(book);
+
+        LoanRequest request = new LoanRequest(book.getId(), READER_EMAIL);
+        //when
+        postman.perform(post("/loans")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(jsonPath("$.readerEmail").value(READER_EMAIL));
+
+        //then
+        postman.perform(get("/loans")
+                .param("readerEmail", READER_EMAIL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+
+        postman.perform(get("/books/{id}", book.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.availableCopies").value(1));
+
+    }
+
+    @Test
+    void shouldThrowExceptionWhenLimitIsExceededAndNotChangeDatabase() throws Exception {
+        // given
+        loanRepository.save(
+                new Loan(book, READER_EMAIL, LocalDate.now())
+        );
+        loanRepository.save(
+                new Loan(book, READER_EMAIL, LocalDate.now())
+        );
+        loanRepository.save(
+                new Loan(book, READER_EMAIL, LocalDate.now())
+        );
+
+        book.setAvailableCopies(2);
+        bookRepository.save(book);
+
+        postman.perform(get("/loans")
+                        .param("readerEmail", READER_EMAIL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+
+        postman.perform(get("/books/{id}", book.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.availableCopies").value(2));
+
+        long loanCountBefore = loanRepository.count();
+
+        LoanRequest request = new LoanRequest(
+                book.getId(),
+                READER_EMAIL
+        );
+
+        // when
+        postman.perform(post("/loans")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.blad").value(
+                        String.format(
+                                "Czytelnik %s przekroczył limit %d wypożyczeń",
+                                READER_EMAIL,
+                                3
+                        )
+                ));
+
+        // then
+        assertThat(loanRepository.count()).isEqualTo(loanCountBefore);
+        assertThat(loanRepository.countByReaderEmail(READER_EMAIL))
+                .isEqualTo(3L);
+
+        Book bookAfterRequest = bookRepository.findById(book.getId())
+                .orElseThrow();
+
+        assertThat(bookAfterRequest.getAvailableCopies()).isEqualTo(2);
+
+
+        postman.perform(get("/loans")
+                        .param("readerEmail", READER_EMAIL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+
+        postman.perform(get("/books/{id}", book.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.availableCopies").value(2));
+    }
 }

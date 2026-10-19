@@ -29,15 +29,14 @@ public class LoanService {
     public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
-            throw new NoAvailableCopiesException(String.format("Brak wolnych egzemplarzy książki %s",book.getTitle()));
+            throw new NoAvailableCopiesException(String.format("Brak wolnych egzemplarzy książki %s", book.getTitle()));
+        }
+
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
+            throw new LoanLimitExceededException(String.format("Czytelnik %s przekroczył limit %d wypożyczeń", readerEmail, MAX_LOANS_PER_READER));
         }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
-        Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
-
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
-            throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
-        }
-        return loan;
+        return loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
     }
 
     @Transactional

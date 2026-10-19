@@ -1,8 +1,8 @@
 package pl.kurs.biblioteka.loan;
 
-public class LoanLimitExceededException extends Exception {
+public class LoanLimitExceededException extends RuntimeException {
 
-    public LoanLimitExceededException(String readerEmail, int limit) {
-        super("Czytelnik " + readerEmail + " przekroczył limit " + limit + " wypożyczeń");
+    public LoanLimitExceededException(String message) {
+        super(message);
     }
 }
