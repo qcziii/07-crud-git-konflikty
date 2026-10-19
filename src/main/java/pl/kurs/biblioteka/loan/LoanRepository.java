@@ -1,6 +1,7 @@
 package pl.kurs.biblioteka.loan;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import pl.kurs.biblioteka.book.BookShortView;
 
 import java.util.List;
 

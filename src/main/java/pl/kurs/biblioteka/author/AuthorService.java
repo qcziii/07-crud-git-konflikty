@@ -1,25 +1,32 @@
 package pl.kurs.biblioteka.author;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import pl.kurs.biblioteka.book.BookRepository;
 
 @Service
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public Page<Author> findAll(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
+    }
+
+    public AuthorShortView findShortById(Long id) {
+        return authorRepository.findProjectedById(id).orElseThrow();
     }
 
     @Transactional

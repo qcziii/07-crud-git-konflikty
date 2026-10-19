@@ -2,5 +2,8 @@ package pl.kurs.biblioteka.author;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface AuthorRepository extends JpaRepository<Author, Long> {
+    Optional<AuthorShortView> findProjectedById(Long id);
 }
