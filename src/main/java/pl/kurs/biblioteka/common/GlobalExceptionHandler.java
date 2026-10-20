@@ -15,4 +15,10 @@ public class GlobalExceptionHandler {
     public Map<String, String> handle(Exception e) {
         return Map.of("blad", String.valueOf(e.getMessage()));
     }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleBookNotFound(BookNotFoundException e) {
+        return Map.of("blad", String.valueOf(e.getMessage()));
+    }
 }
