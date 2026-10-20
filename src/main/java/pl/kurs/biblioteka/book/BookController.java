@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.book;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,20 +22,19 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookResponse> getAll() {
-        return bookService.findAll().stream()
-                .map(BookResponse::from)
-                .toList();
+    public ResponseEntity<List<BookResponse>> findAll() {
+        return ResponseEntity.ok(bookService.findAll());
     }
 
     @GetMapping("/{id}")
-    public BookResponse getById(@PathVariable Long id) {
-        return BookResponse.from(bookService.findById(id));
+    public ResponseEntity<BookResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.findResponseById(id));
     }
 
+
     @PostMapping
-    public BookResponse create(@RequestBody BookRequest request) {
-        return BookResponse.from(bookService.create(request));
+    public ResponseEntity<BookResponse> create(@RequestBody BookRequest request) {
+        return ResponseEntity.ok(bookService.create(request));
     }
 
     @DeleteMapping("/{id}")
