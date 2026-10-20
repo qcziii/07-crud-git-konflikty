@@ -37,6 +37,7 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        Book book = findById(id);
+        bookRepository.delete(book);
     }
 }

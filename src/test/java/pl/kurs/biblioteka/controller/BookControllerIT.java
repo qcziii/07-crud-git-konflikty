@@ -11,6 +11,7 @@ import pl.kurs.biblioteka.book.BookRequest;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -96,5 +97,30 @@ public class BookControllerIT {
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void shouldReturn204WhenBookIsDeleted() throws Exception {
+        BookRequest request = new BookRequest("Pan Tadeusz", "97883000001233", 2, 1L);
+
+        MvcResult result = postman.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String location = result.getResponse().getHeader("Location");
+
+        assert location != null;
+        postman.perform(delete(location))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturn404WhenDeletingNonExistingBook() throws Exception {
+        postman.perform(delete("/books/999999"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
