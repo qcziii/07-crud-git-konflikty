@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.common;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,5 +21,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleBookNotFound(BookNotFoundException e) {
         return Map.of("blad", String.valueOf(e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleANotFound(AuthorNotFoundException e) {
+        return Map.of("blad", String.valueOf(e.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleDataIntegrityViolation(
+            DataIntegrityViolationException e) {
+        return Map.of("blad", String.valueOf(e.getMostSpecificCause()));
     }
 }
