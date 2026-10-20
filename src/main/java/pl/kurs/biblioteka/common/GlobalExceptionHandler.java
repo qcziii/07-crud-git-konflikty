@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(Exception e) {
+        e.printStackTrace();
         return Map.of("blad", String.valueOf(e.getMessage()));
     }
 }
