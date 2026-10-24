@@ -76,6 +76,24 @@ public class LoanControllerTests {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isConflict());
     }
+
+    @Test
+    @Order(5)
+    void booksAvailabilityShouldStayTheSameIfLimitExceeded() throws Exception {
+        LoanRequest loanRequest = new LoanRequest(3L, "limit@gmail.com");
+
+        for (int i = 0; i < 5; i++) {
+            postman.perform(MockMvcRequestBuilders.post("/loans")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(loanRequest)))
+                    .andDo(print());
+        }
+
+        postman.perform(MockMvcRequestBuilders.get("/books/3"))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.availableCopies").value(2));
+    }
 }
 
 

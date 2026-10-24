@@ -28,19 +28,19 @@ public class LoanController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Loan>> getByReader(@RequestParam String readerEmail) {
+    public ResponseEntity<List<LoanResponse>> getByReader(@RequestParam String readerEmail) {
         List<Loan> loans = loanService.findByReader(readerEmail);
-        return new ResponseEntity<>(loans, HttpStatus.OK);
+        return new ResponseEntity<>(loans.stream().map(LoanResponse::from).toList(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Loan> borrow(@Valid @RequestBody LoanRequest request) throws LoanLimitExceededException {
+    public ResponseEntity<LoanResponse> borrow(@Valid @RequestBody LoanRequest request) throws LoanLimitExceededException {
         Loan loan = loanService.borrow(request.bookId(), request.readerEmail());
         URI location = URI.create("/loans/" + loan.getId());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
 
-        return new ResponseEntity<>(loan, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(LoanResponse.from(loan), headers, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

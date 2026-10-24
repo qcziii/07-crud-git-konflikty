@@ -25,7 +25,7 @@ public class LoanService {
         return loanRepository.findByReaderEmail(readerEmail);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = LoanLimitExceededException.class)
     public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
