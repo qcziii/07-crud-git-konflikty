@@ -1,5 +1,9 @@
 package pl.kurs.biblioteka.author;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,10 +25,12 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorResponse> getAll() {
-        return authorService.findAll().stream()
+    public ResponseEntity<List<AuthorResponse>> getAll() {
+        List <AuthorResponse> responses = authorService.findAll().stream()
                 .map(AuthorResponse::from)
                 .toList();
+
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -32,7 +39,12 @@ public class AuthorController {
     }
 
     @PostMapping
-    public AuthorResponse create(@RequestBody AuthorRequest request) {
-        return AuthorResponse.from(authorService.create(request));
+    public ResponseEntity<AuthorResponse> create(@Valid @RequestBody AuthorRequest request) {
+        AuthorResponse response = AuthorResponse.from(authorService.create(request));
+        URI location = URI.create("/authors/" + response.id());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(location);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
     }
 }
