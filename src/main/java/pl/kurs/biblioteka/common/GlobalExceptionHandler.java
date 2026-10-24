@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.common;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,7 +17,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({org.springframework.web.bind.MethodArgumentNotValidException.class,
+            org.springframework.http.converter.HttpMessageNotReadableException.class,
+            org.springframework.web.bind.ServletRequestBindingException.class,
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handle(Exception e) {
         return Map.of("Error: ", "Unexpected server error");
@@ -56,5 +60,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleLoanLimitExceededException(Exception e){
         return Map.of("Error: ", String.valueOf(e.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        String message = e.getMostSpecificCause().getMessage();
+        if (message != null && (message.toLowerCase().contains("isbn"))) {
+            return Map.of("Error: ", "Book with the same ISBN exists");
+        }
+        return Map.of("Error: ", "Data integrity error");
     }
 }

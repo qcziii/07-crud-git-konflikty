@@ -63,11 +63,19 @@ public class BookControllerTests {
     @Test
     void shouldDeleteBook() throws Exception {
 
-        postman.perform(MockMvcRequestBuilders.delete("/books/1"))
+        BookRequest bookRequest = new BookRequest("tetestst", "testt", 10, 1L);
+
+        postman.perform(MockMvcRequestBuilders.post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookRequest)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        postman.perform(MockMvcRequestBuilders.delete("/books/5"))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        postman.perform(MockMvcRequestBuilders.get("/books/1"))
+        postman.perform(MockMvcRequestBuilders.get("/books/5"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
