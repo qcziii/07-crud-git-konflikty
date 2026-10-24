@@ -11,6 +11,7 @@ import pl.kurs.biblioteka.book.BookWithIsbnNotFoundException;
 import pl.kurs.biblioteka.book.DuplicateOfIsbnExeption;
 import pl.kurs.biblioteka.loan.LoanLimitExceededException;
 import pl.kurs.biblioteka.loan.LoanWithIdNotFoundException;
+import pl.kurs.biblioteka.loan.NoBooksAvaliableException;
 
 import java.util.Map;
 
@@ -56,11 +57,7 @@ public class GlobalExceptionHandler {
         return Map.of("Error: ", String.valueOf(e.getMessage()));
     }
 
-    @ExceptionHandler(LoanLimitExceededException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleLoanLimitExceededException(Exception e){
-        return Map.of("Error: ", String.valueOf(e.getMessage()));
-    }
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -70,5 +67,11 @@ public class GlobalExceptionHandler {
             return Map.of("Error: ", "Book with the same ISBN exists");
         }
         return Map.of("Error: ", "Data integrity error");
+    }
+
+    @ExceptionHandler(NoBooksAvaliableException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleNoBooksAvaliableException(Exception e){
+        return Map.of("Error: ", String.valueOf(e.getMessage()));
     }
 }

@@ -29,7 +29,7 @@ public class LoanService {
     public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
+            throw new NoBooksAvaliableException(book.getTitle());
         }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
