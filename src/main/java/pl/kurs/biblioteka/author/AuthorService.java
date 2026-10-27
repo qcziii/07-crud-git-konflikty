@@ -14,16 +14,19 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public List<AuthorResponse> findAll() {
+        return authorRepository.findAll()
+                .stream()
+                .map(AuthorResponse::from)
+                .toList();
     }
 
-    public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+    public AuthorResponse findById(Long id) {
+        return AuthorResponse.from(authorRepository.findById(id).get());
     }
 
     @Transactional
-    public Author create(AuthorRequest request) {
-        return authorRepository.save(new Author(request.name()));
+    public AuthorResponse create(AuthorRequest request) {
+        return AuthorResponse.from(authorRepository.save(new Author(request.name())));
     }
 }

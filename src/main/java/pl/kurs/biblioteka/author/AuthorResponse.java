@@ -7,13 +7,13 @@ import java.util.List;
 public record AuthorResponse(
         Long id,
         String name,
-        List<Book> books
+        List<Long> booksId
 ) {
     public static AuthorResponse from(Author author) {
         return new AuthorResponse(
                 author.getId(),
                 author.getName(),
-                author.getBooks()
+                author.getBooks().stream().map(Book::getId).toList()
         );
     }
 }
