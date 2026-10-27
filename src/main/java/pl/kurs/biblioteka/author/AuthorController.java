@@ -20,9 +20,9 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorResponse> getAll() {
+    public List<AuthorDto> getAll() {
         return authorService.findAll().stream()
-                .map(AuthorResponse::from)
+                .map(AuthorMapper::toDto)
                 .toList();
     }
 
