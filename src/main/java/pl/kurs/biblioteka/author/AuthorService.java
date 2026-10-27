@@ -15,6 +15,7 @@ public class AuthorService {
     }
 
     public List<Author> findAll() {
+        System.out.println("dupa");
         return authorRepository.findAll();
     }
 
