@@ -1,6 +1,5 @@
 package pl.kurs.biblioteka.loan;
 
-
 import java.time.LocalDate;
 
 public record LoanResponse(

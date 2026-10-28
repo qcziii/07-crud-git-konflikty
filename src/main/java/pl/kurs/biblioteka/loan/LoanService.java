@@ -24,11 +24,6 @@ public class LoanService {
 
     public List<LoanResponse> findByReader(String readerEmail) {
         List<Loan> loans = loanRepository.findByReaderEmail(readerEmail);
-
-        System.out.println(loans);
-        System.out.println(loans.size());
-        System.out.println(readerEmail.length());
-
         return loans.stream().map(LoanResponse::from).toList();
     }
 
