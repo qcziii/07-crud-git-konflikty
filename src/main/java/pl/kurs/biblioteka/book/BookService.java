@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorRepository;
+import pl.kurs.biblioteka.common.ResourceNotFoundException;
+
 import java.util.List;
 
 @Service
@@ -25,13 +27,15 @@ public class BookService {
     }
 
     public BookResponse findById(Long id) {
-        return BookResponse.from(bookRepository.findById(id).get());
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book with id: " + id + " do not exist"));
+        return BookResponse.from(book);
     }
 
     @Transactional
     public BookResponse create(BookRequest request) {
         Author author = authorRepository.findById(request.authorId())
-                .orElseThrow(() -> new IllegalArgumentException("Author with id: " + request.authorId() + " do not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Author with id: " + request.authorId() + " do not exist"));
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
         Book savedBook = bookRepository.save(book);
         return BookResponse.from(savedBook);

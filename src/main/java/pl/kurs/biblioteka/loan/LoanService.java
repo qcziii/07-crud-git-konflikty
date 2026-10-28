@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookRepository;
+import pl.kurs.biblioteka.common.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +31,7 @@ public class LoanService {
     @Transactional
     public LoanResponse borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("Book with id: " + bookId + " do not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book with id: " + bookId + " do not exist"));
         if (book.getAvailableCopies() == 0) {
             throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
         }
@@ -44,7 +45,8 @@ public class LoanService {
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new ResourceNotFoundException("Loan with id: " + loanId + " do not exist"));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);
