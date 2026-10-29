@@ -2,6 +2,7 @@ package pl.kurs.biblioteka.author;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.kurs.biblioteka.common.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AuthorService {
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("There is no Author with given ID: " + id));
     }
 
     @Transactional

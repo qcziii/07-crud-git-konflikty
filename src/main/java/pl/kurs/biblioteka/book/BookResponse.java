@@ -7,15 +7,22 @@ public record BookResponse(
         String title,
         String isbn,
         int availableCopies,
-        Author author
+        AuthorSummary author
 ) {
+
+    public record AuthorSummary(Long id, String name) {
+        static AuthorSummary from(Author author) {
+            return new AuthorSummary(author.getId(), author.getName());
+        }
+    }
+
     public static BookResponse from(Book book) {
         return new BookResponse(
                 book.getId(),
                 book.getTitle(),
                 book.getIsbn(),
                 book.getAvailableCopies(),
-                book.getAuthor()
+                AuthorSummary.from(book.getAuthor())
         );
     }
 }

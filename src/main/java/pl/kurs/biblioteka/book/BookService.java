@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorService;
+import pl.kurs.biblioteka.common.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id).get();
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("There is no Book with given ID: " + id));
     }
 
     @Transactional
@@ -35,6 +36,7 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        Book bookToDelete = findById(id);
+        bookRepository.delete(bookToDelete);
     }
 }
