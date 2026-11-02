@@ -1,5 +1,6 @@
 package pl.kurs.biblioteka.author;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ public class Author {
     private String name;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Book> books = new ArrayList<>();
 
     protected Author() {

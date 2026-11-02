@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorService;
+import pl.kurs.biblioteka.common.BookNotFoundException;
+import pl.kurs.biblioteka.common.EmptyTitleException;
 
 import java.util.List;
 
@@ -23,11 +25,15 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return bookRepository.findById(id).get();
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(String.format("Book with id: %d not found", id)));
     }
 
     @Transactional
     public Book create(BookRequest request) {
+        if (request.title() == null || request.title().isBlank()) {
+            throw new EmptyTitleException("Title can not be empty");
+        }
         Author author = authorService.findById(request.authorId());
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
         return bookRepository.save(book);
@@ -35,6 +41,7 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        Book book = findById(id);
+        bookRepository.delete(book);
     }
 }

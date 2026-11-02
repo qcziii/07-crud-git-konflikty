@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record BookRequest(
-        @NotBlank String title,
+        String title,
         @NotBlank String isbn,
         @Min(0) int availableCopies,
         @NotNull Long authorId
