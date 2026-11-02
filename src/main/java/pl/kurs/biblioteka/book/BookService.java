@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.author.Author;
 import pl.kurs.biblioteka.author.AuthorService;
 import pl.kurs.biblioteka.common.BookNotFoundException;
+import pl.kurs.biblioteka.common.EmptyTitleException;
 
 import java.util.List;
 
@@ -30,6 +31,9 @@ public class BookService {
 
     @Transactional
     public Book create(BookRequest request) {
+        if (request.title() == null || request.title().isBlank()) {
+            throw new EmptyTitleException("Title can not be empty");
+        }
         Author author = authorService.findById(request.authorId());
         Book book = new Book(request.title(), request.isbn(), request.availableCopies(), author);
         return bookRepository.save(book);

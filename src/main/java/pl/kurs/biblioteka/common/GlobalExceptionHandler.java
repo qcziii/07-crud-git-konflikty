@@ -1,38 +1,59 @@
 package pl.kurs.biblioteka.common;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Map;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle(Exception e) {
-        return Map.of("blad", String.valueOf(e.getMessage()));
+    @ExceptionHandler(EmptyTitleException.class)
+    public ResponseEntity<ErrorMessage> handleEmptyTitle(EmptyTitleException e, HttpServletRequest request) {
+        return new ResponseEntity<>(ErrorMessage.builder()
+                .code(BAD_REQUEST.value())
+                .status(BAD_REQUEST.getReasonPhrase())
+                .message(e.getMessage())
+                .uri(request.getRequestURI())
+                .method(request.getMethod())
+                .build(), BAD_REQUEST);
     }
 
     @ExceptionHandler(BookNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleBookNotFound(BookNotFoundException e) {
-        return Map.of("blad", String.valueOf(e.getMessage()));
+    public ResponseEntity<ErrorMessage> handleBookNotFound(BookNotFoundException e, HttpServletRequest request) {
+        return new ResponseEntity<>(ErrorMessage.builder()
+                .code(NOT_FOUND.value())
+                .status(NOT_FOUND.getReasonPhrase())
+                .message(e.getMessage())
+                .uri(request.getRequestURI())
+                .method(request.getMethod())
+                .build(), NOT_FOUND);
     }
 
     @ExceptionHandler(AuthorNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleANotFound(AuthorNotFoundException e) {
-        return Map.of("blad", String.valueOf(e.getMessage()));
+    public ResponseEntity<ErrorMessage> handleAuthorNotFound(AuthorNotFoundException e, HttpServletRequest request) {
+        return new ResponseEntity<>(ErrorMessage.builder()
+                .code(NOT_FOUND.value())
+                .status(NOT_FOUND.getReasonPhrase())
+                .message(e.getMessage())
+                .uri(request.getRequestURI())
+                .method(request.getMethod())
+                .build(), NOT_FOUND);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleDataIntegrityViolation(
-            DataIntegrityViolationException e) {
-        return Map.of("blad", String.valueOf(e.getMostSpecificCause()));
+    public ResponseEntity<ErrorMessage> handleDataIntegrityViolation(DataIntegrityViolationException e, HttpServletRequest request) {
+        return new ResponseEntity<>(ErrorMessage.builder()
+                .code(CONFLICT.value())
+                .status(CONFLICT.getReasonPhrase())
+                .message("Book with this ISBN already exists")
+                .uri(request.getRequestURI())
+                .method(request.getMethod())
+                .build(), CONFLICT);
     }
 }
