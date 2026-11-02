@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import pl.kurs.biblioteka.BibliotekaApplication;
 import pl.kurs.biblioteka.book.BookRequest;
 import tools.jackson.databind.ObjectMapper;
 
@@ -21,17 +22,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest("BibliotekaApplication.class")
+@SpringBootTest(classes = BibliotekaApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(scripts = "/test-data.sql")
-public class BookControllerIT {
+public class BookControllerTest {
 
     private final MockMvc postman;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public BookControllerIT(MockMvc postman, ObjectMapper objectMapper) {
+    public BookControllerTest(MockMvc postman, ObjectMapper objectMapper) {
         this.postman = postman;
         this.objectMapper = objectMapper;
     }
