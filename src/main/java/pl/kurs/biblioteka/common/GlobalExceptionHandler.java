@@ -12,7 +12,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle(Exception e) {
-        return Map.of("blad", String.valueOf(e.getMessage()));
+    public ErrorRespondeDto handle(Exception e) {
+        e.printStackTrace();
+        return new ErrorRespondeDto(e.getMessage());
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.biblioteka.mapper.LoanMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,10 +16,12 @@ public class LoanService {
 
     private final LoanRepository loanRepository;
     private final BookService bookService;
+    private final LoanMapper loanMapper;
 
-    public LoanService(LoanRepository loanRepository, BookService bookService) {
+    public LoanService(LoanRepository loanRepository, BookService bookService, LoanMapper loanMapper) {
         this.loanRepository = loanRepository;
         this.bookService = bookService;
+        this.loanMapper = loanMapper;
     }
 
     public List<Loan> findByReader(String readerEmail) {
@@ -46,5 +49,13 @@ public class LoanService {
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);
+    }
+
+    @Transactional
+    public List<LoanResponse> findResponseByReader(String readerEmail) {
+        return loanRepository.findByReaderEmail(readerEmail)
+                .stream()
+                .map(loanMapper::fromLoan)
+                .toList();
     }
 }

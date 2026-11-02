@@ -1,19 +1,14 @@
 package pl.kurs.biblioteka.author;
 
-import pl.kurs.biblioteka.book.Book;
+import lombok.Builder;
+import pl.kurs.biblioteka.book.BookDto;
 
 import java.util.List;
 
+@Builder
 public record AuthorResponse(
         Long id,
         String name,
-        List<Book> books
+        List<BookDto> books
 ) {
-    public static AuthorResponse from(Author author) {
-        return new AuthorResponse(
-                author.getId(),
-                author.getName(),
-                author.getBooks()
-        );
-    }
 }
