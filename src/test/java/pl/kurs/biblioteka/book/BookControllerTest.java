@@ -11,7 +11,9 @@ import pl.kurs.biblioteka.author.AuthorRepository;
 
 import java.util.UUID;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -59,7 +61,8 @@ class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("$.title").value("Kajak"))
                 .andExpect(jsonPath("$.isbn").value(isbn))
                 .andExpect(jsonPath("$.availableCopies").value(5))

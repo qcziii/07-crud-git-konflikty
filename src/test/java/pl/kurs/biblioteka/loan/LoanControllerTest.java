@@ -13,6 +13,7 @@ import pl.kurs.biblioteka.book.BookRepository;
 
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,7 +59,8 @@ class LoanControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("$.bookId").value(book.getId()))
                 .andExpect(jsonPath("$.bookTitle").value("Kajak"))
                 .andExpect(jsonPath("$.readerEmail").value(email))

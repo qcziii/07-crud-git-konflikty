@@ -34,7 +34,6 @@ public class AuthorService {
         return authorMapper.fromAuthor(author);
     }
 
-    @Transactional
     public AuthorResponse create(AuthorRequest request) {
         Author author = new Author(request.name());
         Author savedAuthor = authorRepository.save(author);
