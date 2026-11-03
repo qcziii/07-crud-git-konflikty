@@ -29,11 +29,11 @@ public class LoanService {
     }
 
     @Transactional
-    public LoanResponse borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
+    public LoanResponse borrow(Long bookId, String readerEmail) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book with id: " + bookId + " do not exist"));
         if (book.getAvailableCopies() == 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
+            throw new LoanLimitExceededException("Brak wolnych egzemplarzy książki " + book.getTitle());
         }
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         Loan savedLoan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
