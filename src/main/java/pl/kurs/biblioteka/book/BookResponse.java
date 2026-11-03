@@ -7,7 +7,8 @@ public record BookResponse(
         String title,
         String isbn,
         int availableCopies,
-        Author author
+        Long authorId,
+        String authorName
 ) {
     public static BookResponse from(Book book) {
         return new BookResponse(
@@ -15,7 +16,8 @@ public record BookResponse(
                 book.getTitle(),
                 book.getIsbn(),
                 book.getAvailableCopies(),
-                book.getAuthor()
+                book.getAuthor().getId(),
+                book.getAuthor().getName()
         );
     }
 }
