@@ -1,12 +1,16 @@
 package pl.kurs.biblioteka.author;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,9 +24,9 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorDto> getAll() {
+    public List<AuthorResponse> getAll() {
         return authorService.findAll().stream()
-                .map(AuthorMapper::toDto)
+                .map(AuthorResponse::from)
                 .toList();
     }
 
@@ -32,7 +36,12 @@ public class AuthorController {
     }
 
     @PostMapping
-    public AuthorResponse create(@RequestBody AuthorRequest request) {
-        return AuthorResponse.from(authorService.create(request));
+    public ResponseEntity<AuthorResponse> create(@Valid @RequestBody AuthorRequest request) {
+        Author author = authorService.create(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(author.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(AuthorResponse.from(author));
     }
 }
