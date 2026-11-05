@@ -1,18 +1,21 @@
 package pl.kurs.biblioteka.loan;
 
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
+import pl.kurs.biblioteka.book.BookRepository;
 import pl.kurs.biblioteka.book.BookRequest;
 import pl.kurs.biblioteka.book.BookResponse;
 import tools.jackson.databind.ObjectMapper;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +35,13 @@ class LoanControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private LoanRepository loanRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
+
 
     @Test
     void shouldReturn200WithLoansOfReader() throws Exception {
@@ -180,5 +190,42 @@ class LoanControllerTest {
         postman.perform(delete("/loans/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value(404));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void shouldNotChangeDatabaseWhenLoanLimitExceeded() throws Exception {
+
+        BookRequest bookRequest = new BookRequest("Test", "978-83-00-00001-3", 10, 1L);
+
+        String bookResponseBody = postman.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookRequest))
+                )
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Long bookId = objectMapper.readValue(bookResponseBody, BookResponse.class).id();
+
+        LoanRequest loanRequest = new LoanRequest(bookId, "test@test.com");
+        String loanJson = objectMapper.writeValueAsString(loanRequest);
+
+        postman.perform(post("/loans").contentType(MediaType.APPLICATION_JSON).content(loanJson))
+                .andExpect(status().isCreated());
+        postman.perform(post("/loans").contentType(MediaType.APPLICATION_JSON).content(loanJson))
+                .andExpect(status().isCreated());
+        postman.perform(post("/loans").contentType(MediaType.APPLICATION_JSON).content(loanJson))
+                .andExpect(status().isCreated());
+
+        long loansBefore = loanRepository.countByReaderEmail("test@test.com");
+        int copiesBefore = bookRepository.findById(bookId).orElseThrow().getAvailableCopies();
+
+        postman.perform(post("/loans").contentType(MediaType.APPLICATION_JSON).content(loanJson))
+                .andExpect(status().isConflict());
+
+        assertThat(loanRepository.countByReaderEmail("test@test.com")).isEqualTo(loansBefore);
+        assertThat(bookRepository.findById(bookId).orElseThrow().getAvailableCopies()).isEqualTo(copiesBefore);
     }
 }
