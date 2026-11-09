@@ -1,11 +1,11 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.kurs.biblioteka.book.Book;
-import pl.kurs.biblioteka.book.BookService;
-import pl.kurs.biblioteka.common.ResourceNotFoundException;
+import pl.kurs.library.book.Book;
+import pl.kurs.library.book.BookService;
+import pl.kurs.library.common.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +19,7 @@ public class LoanService {
 
     public LoanService(LoanRepository loanRepository,
                        BookService bookService,
-                       @Value("${biblioteka.wypozyczenia.limit-na-czytelnika}") int maxLoansPerReader) {
+                       @Value("${library.loans.limit-per-reader}") int maxLoansPerReader) {
         this.loanRepository = loanRepository;
         this.bookService = bookService;
         this.maxLoansPerReader = maxLoansPerReader;

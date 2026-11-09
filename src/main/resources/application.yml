@@ -1,8 +1,8 @@
 spring:
   application:
-    name: biblioteka
+    name: library
   datasource:
-    url: jdbc:h2:mem:biblioteka
+    url: jdbc:h2:mem:library
   jpa:
     open-in-view: false
     hibernate:
@@ -15,6 +15,6 @@ spring:
 server:
   port: 8080
 
-biblioteka:
-  wypozyczenia:
-    limit-na-czytelnika: 3
+library:
+  loans:
+    limit-per-reader: 3

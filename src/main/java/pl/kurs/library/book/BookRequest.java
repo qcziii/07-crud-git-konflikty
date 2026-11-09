@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.book;
+package pl.kurs.library.book;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

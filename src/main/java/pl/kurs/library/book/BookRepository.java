@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.book;
+package pl.kurs.library.book;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.author;
+package pl.kurs.library.author;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import pl.kurs.biblioteka.book.Book;
+import pl.kurs.library.book.Book;
 
 import java.util.ArrayList;
 import java.util.List;

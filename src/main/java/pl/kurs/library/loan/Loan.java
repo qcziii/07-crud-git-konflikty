@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import pl.kurs.biblioteka.book.Book;
+import pl.kurs.library.book.Book;
 
 import java.time.LocalDate;
 

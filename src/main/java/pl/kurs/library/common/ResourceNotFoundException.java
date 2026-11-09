@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.common;
+package pl.kurs.library.common;
 
 public class ResourceNotFoundException extends RuntimeException {
 

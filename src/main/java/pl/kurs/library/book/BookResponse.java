@@ -1,6 +1,6 @@
-package pl.kurs.biblioteka.book;
+package pl.kurs.library.book;
 
-import pl.kurs.biblioteka.author.Author;
+import pl.kurs.library.author.Author;
 
 public record BookResponse(
         Long id,

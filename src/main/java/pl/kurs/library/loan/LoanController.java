@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
