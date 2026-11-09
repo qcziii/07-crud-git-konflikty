@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.common;
+package pl.kurs.library.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(Exception e) {
-        return Map.of("blad", String.valueOf(e.getMessage()));
+        return Map.of("error", String.valueOf(e.getMessage()));
     }
 }

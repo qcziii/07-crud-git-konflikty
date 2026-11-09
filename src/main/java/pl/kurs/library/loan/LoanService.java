@@ -1,9 +1,9 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.kurs.biblioteka.book.Book;
-import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.library.book.Book;
+import pl.kurs.library.book.BookService;
 
 import java.time.LocalDate;
 import java.util.List;

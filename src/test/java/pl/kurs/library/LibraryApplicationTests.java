@@ -1,10 +1,10 @@
-package pl.kurs.biblioteka;
+package pl.kurs.library;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BibliotekaApplicationTests {
+class LibraryApplicationTests {
 
     @Test
     void contextLoads() {

@@ -1,6 +1,6 @@
-package pl.kurs.biblioteka.author;
+package pl.kurs.library.author;
 
-import pl.kurs.biblioteka.book.Book;
+import pl.kurs.library.book.Book;
 
 import java.util.List;
 

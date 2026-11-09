@@ -1,9 +1,9 @@
-package pl.kurs.biblioteka.book;
+package pl.kurs.library.book;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.kurs.biblioteka.author.Author;
-import pl.kurs.biblioteka.author.AuthorService;
+import pl.kurs.library.author.Author;
+import pl.kurs.library.author.AuthorService;
 
 import java.util.List;
 

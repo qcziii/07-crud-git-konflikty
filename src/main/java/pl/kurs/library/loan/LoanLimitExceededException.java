@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.loan;
+package pl.kurs.library.loan;
 
 public class LoanLimitExceededException extends Exception {
 

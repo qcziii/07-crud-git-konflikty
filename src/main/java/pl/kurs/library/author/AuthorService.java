@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.author;
+package pl.kurs.library.author;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

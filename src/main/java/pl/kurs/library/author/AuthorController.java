@@ -1,4 +1,4 @@
-package pl.kurs.biblioteka.author;
+package pl.kurs.library.author;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
