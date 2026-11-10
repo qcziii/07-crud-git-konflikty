@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.biblioteka.book.Book;
 import pl.kurs.biblioteka.book.BookService;
+import pl.kurs.biblioteka.common.LoanNotFoundException;
+import pl.kurs.biblioteka.common.NoAvailableCopiesException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,23 +28,22 @@ public class LoanService {
     }
 
     @Transactional
-    public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
+    public Loan borrow(Long bookId, String readerEmail) {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
+            throw new NoAvailableCopiesException("Brak wolnych egzemplarzy ksiązki: " + book.getTitle());
         }
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
-        Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
-
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
         }
-        return loan;
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        return loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
     }
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new LoanNotFoundException("Nie znaleziono wypożyczenia o id " + loanId));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);

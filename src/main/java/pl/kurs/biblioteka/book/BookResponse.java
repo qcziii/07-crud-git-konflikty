@@ -1,7 +1,5 @@
 package pl.kurs.biblioteka.book;
 
-import pl.kurs.biblioteka.author.Author;
-
 public record BookResponse(
         Long id,
         String title,
