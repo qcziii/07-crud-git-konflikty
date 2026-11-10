@@ -31,7 +31,7 @@ public class LoanService {
     public Loan borrow(Long bookId, String readerEmail) {
         Book book = bookService.findById(bookId);
         if (book.getAvailableCopies() == 0) {
-            throw new NoAvailableCopiesException(book.getTitle());
+            throw new NoAvailableCopiesException("Brak wolnych egzemplarzy ksiązki: " + book.getTitle());
         }
         if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);

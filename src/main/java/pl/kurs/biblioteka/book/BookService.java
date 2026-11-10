@@ -8,6 +8,7 @@ import pl.kurs.biblioteka.common.BookNotFoundException;
 import pl.kurs.biblioteka.common.ISBNDuplicatedException;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 @Service
 public class BookService {
