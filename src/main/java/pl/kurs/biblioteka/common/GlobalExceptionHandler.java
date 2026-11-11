@@ -67,11 +67,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleDBIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
-
-        Pattern pattern = Pattern.compile("(?m)^(?:could not execute statement \\[)?([^\\[\\n:]+):?\\s*(?:\"(.*)\")?\\s*;\\s*SQL statement:");
-        Matcher m = pattern.matcher(ex.getMessage());
-        String cleanExceptionMessage = m.find() ? m.group(1).trim() : "Data integrity violation";
-
+        String cleanExceptionMessage = "The supplied data conflicts with existing records or violates a data constraint.";
         ErrorMessage error = new ErrorMessage(
                 LocalDateTime.now(),
                 CONFLICT.value(),
