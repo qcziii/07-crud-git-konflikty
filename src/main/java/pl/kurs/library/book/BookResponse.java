@@ -1,13 +1,13 @@
 package pl.kurs.library.book;
 
-import pl.kurs.library.author.Author;
 
 public record BookResponse(
         Long id,
         String title,
         String isbn,
         int availableCopies,
-        Author author
+        long authorId,
+        String name
 ) {
     public static BookResponse from(Book book) {
         return new BookResponse(
@@ -15,7 +15,8 @@ public record BookResponse(
                 book.getTitle(),
                 book.getIsbn(),
                 book.getAvailableCopies(),
-                book.getAuthor()
+                book.getAuthor().getId(),
+                book.getAuthor().getName()
         );
     }
 }

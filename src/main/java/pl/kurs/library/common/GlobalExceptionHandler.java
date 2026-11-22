@@ -1,11 +1,19 @@
 package pl.kurs.library.common;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import pl.kurs.library.book.BookNotFoundException;
+import pl.kurs.library.book.DuplicateIsbnException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -15,4 +23,30 @@ public class GlobalExceptionHandler {
     public Map<String, String> handle(Exception e) {
         return Map.of("error", String.valueOf(e.getMessage()));
     }
+
+    @ExceptionHandler(DuplicateIsbnException.class)
+    public ResponseEntity<ErrorMessage> duplicateIsbnException(DuplicateIsbnException e, HttpServletRequest request) {
+        return new ResponseEntity<>(ErrorMessage.builder()
+                .dateTime(LocalDateTime.now())
+                .code(CONFLICT.value())
+                .status(CONFLICT.getReasonPhrase())
+                .message(e.getMessage())
+                .uri(request.getRequestURI())
+                .method(request.getMethod())
+                .build(), CONFLICT);
+    }
+
+
+ @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<ErrorMessage> bookNotFoundException(BookNotFoundException e, HttpServletRequest request) {
+     return new ResponseEntity<>(ErrorMessage.builder()
+             .dateTime(LocalDateTime.now())
+             .code(NOT_FOUND.value())
+             .status(NOT_FOUND.getReasonPhrase())
+             .message(e.getMessage())
+             .uri(request.getRequestURI())
+             .method(request.getMethod())
+             .build(), NOT_FOUND);
+ }
+
 }

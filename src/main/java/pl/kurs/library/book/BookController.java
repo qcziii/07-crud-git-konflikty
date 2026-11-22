@@ -1,5 +1,8 @@
 package pl.kurs.library.book;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +25,8 @@ public class BookController {
 
     @GetMapping
     public List<BookResponse> getAll() {
-        return bookService.findAll().stream()
-                .map(BookResponse::from)
-                .toList();
+        return bookService.findAll();
+
     }
 
     @GetMapping("/{id}")
@@ -33,8 +35,8 @@ public class BookController {
     }
 
     @PostMapping
-    public BookResponse create(@RequestBody BookRequest request) {
-        return BookResponse.from(bookService.create(request));
+    public ResponseEntity<BookResponse> create(@Valid @RequestBody BookRequest request) {
+        return new ResponseEntity<>(bookService.create(request), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
