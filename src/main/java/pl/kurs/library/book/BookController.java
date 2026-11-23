@@ -1,5 +1,8 @@
 package pl.kurs.library.book;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -15,30 +20,35 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final BookRepository bookRepository;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, BookRepository bookRepository) {
         this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping
     public List<BookResponse> getAll() {
-        return bookService.findAll().stream()
-                .map(BookResponse::from)
-                .toList();
+        return bookService.findAll();
     }
 
     @GetMapping("/{id}")
-    public BookResponse getById(@PathVariable Long id) {
-        return BookResponse.from(bookService.findById(id));
+    public ResponseEntity<BookResponse> getById(@PathVariable Long id) {
+        return bookService.findById(id)
+                .map(book -> ResponseEntity.ok(BookResponse.from(book)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public BookResponse create(@RequestBody BookRequest request) {
-        return BookResponse.from(bookService.create(request));
+    public ResponseEntity<BookResponse> create(@Valid @RequestBody BookRequest request) {
+        BookResponse response = BookResponse.from(bookService.create(request));
+        URI location = URI.create("/books/" + response.id());
+        return ResponseEntity.created(location).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
