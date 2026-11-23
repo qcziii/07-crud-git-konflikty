@@ -19,12 +19,10 @@ public class LoanService {
     private static final int MAX_LOANS_PER_READER = 3;
 
     private final LoanRepository loanRepository;
-    private final BookService bookService;
     private final BookRepository bookRepository;
 
-    public LoanService(LoanRepository loanRepository, BookService bookService, BookRepository bookRepository) {
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
-        this.bookService = bookService;
         this.bookRepository = bookRepository;
     }
 
