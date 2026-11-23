@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.library.book.Book;
 import pl.kurs.library.book.BookRepository;
-import pl.kurs.library.book.BookService;
 import pl.kurs.library.exception.BookAvailableException;
 import pl.kurs.library.exception.BookNotFoundException;
 import pl.kurs.library.exception.LoanLimitExceededException;
