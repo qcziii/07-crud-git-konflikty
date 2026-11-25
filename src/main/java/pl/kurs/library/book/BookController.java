@@ -24,14 +24,14 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookResponse> getAll() {
+    public List<BookShortResponse> getAll() {
         return bookService.findAll();
 
     }
 
     @GetMapping("/{id}")
-    public BookResponse getById(@PathVariable Long id) {
-        return BookResponse.from(bookService.findById(id));
+    public ResponseEntity<BookShortResponse> getById(@PathVariable Long id) {
+        return new ResponseEntity<>(bookService.findShortResponseBookById(id), HttpStatus.OK);
     }
 
     @PostMapping
@@ -40,7 +40,8 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         bookService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

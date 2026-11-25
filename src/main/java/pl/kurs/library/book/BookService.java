@@ -18,16 +18,21 @@ public class BookService {
         this.authorService = authorService;
     }
 
-    public List<BookResponse> findAll() {
+    public List<BookShortResponse> findAll() {
         return bookRepository.findAll()
                 .stream()
-                .map(BookResponse::from)
+                .map(BookShortResponse::from)
                 .toList();
     }
 
+    public BookShortResponse findShortResponseBookById(Long id) {
+        return BookShortResponse.from(findById(id));
+    }
+
     public Book findById(Long id) {
-        return bookRepository.findById(id).orElseThrow(() ->
-                new BookNotFoundException("Cannot find book with id: " + id));
+        return bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new BookNotFoundException("Cannot find book with id: " + id));
     }
 
     @Transactional

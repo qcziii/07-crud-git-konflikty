@@ -8,6 +8,7 @@ public record AuthorResponse(
         Long id,
         String name,
         List<BookResponse> books
+
 ) {
     public static AuthorResponse from(Author author) {
         return new AuthorResponse(

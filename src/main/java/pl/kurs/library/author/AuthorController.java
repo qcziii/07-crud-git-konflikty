@@ -1,5 +1,7 @@
 package pl.kurs.library.author;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +22,17 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorResponse> getAll() {
-        return authorService.findAll().stream()
-                .map(AuthorResponse::from)
-                .toList();
+    public ResponseEntity<List<AuthorShortResponse>> getAll() {
+        return new ResponseEntity<>(authorService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public AuthorResponse getById(@PathVariable Long id) {
-        return AuthorResponse.from(authorService.findById(id));
+    public ResponseEntity<AuthorShortResponse> getById(@PathVariable Long id) {
+        return new ResponseEntity<>(AuthorShortResponse.from(authorService.findById(id)), HttpStatus.OK);
     }
 
     @PostMapping
-    public AuthorResponse create(@RequestBody AuthorRequest request) {
-        return AuthorResponse.from(authorService.create(request));
+    public ResponseEntity<AuthorResponse> create(@RequestBody AuthorRequest request) {
+        return new ResponseEntity<>(AuthorResponse.from(authorService.create(request)), HttpStatus.CREATED);
     }
 }

@@ -1,5 +1,8 @@
 package pl.kurs.library.loan;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,17 +25,18 @@ public class LoanController {
     }
 
     @GetMapping
-    public List<Loan> getByReader(@RequestParam String readerEmail) {
-        return loanService.findByReader(readerEmail);
+    public ResponseEntity<List<LoanResponse>> getByReader(@RequestParam String readerEmail) {
+        return new ResponseEntity<>(loanService.findByReader(readerEmail), HttpStatus.OK);
     }
 
     @PostMapping
-    public Loan borrow(@RequestBody LoanRequest request) throws LoanLimitExceededException {
-        return loanService.borrow(request.bookId(), request.readerEmail());
+    public ResponseEntity<LoanResponse> borrow(@Valid @RequestBody LoanRequest request) throws LoanLimitExceededException {
+        return new ResponseEntity<>(loanService.borrow(request.bookId(), request.readerEmail()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public void giveBack(@PathVariable Long id) {
+    public ResponseEntity<Void> giveBack(@PathVariable Long id) {
         loanService.giveBack(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

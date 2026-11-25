@@ -6,6 +6,7 @@ import pl.kurs.library.book.Book;
 import pl.kurs.library.book.BookService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,28 +22,35 @@ public class LoanService {
         this.bookService = bookService;
     }
 
-    public List<Loan> findByReader(String readerEmail) {
-        return loanRepository.findByReaderEmail(readerEmail);
+    public List<LoanResponse> findByReader(String readerEmail) {
+        return loanRepository.findByReaderEmail(readerEmail)
+                .stream()
+                .map(LoanResponse::from)
+                .toList();
     }
 
     @Transactional
-    public Loan borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
-        Book book = bookService.findById(bookId);
-        if (book.getAvailableCopies() == 0) {
-            throw new IllegalStateException("Brak wolnych egzemplarzy książki " + book.getTitle());
-        }
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
-        Loan loan = loanRepository.save(new Loan(book, readerEmail, LocalDate.now()));
+    public LoanResponse borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
 
-        if (loanRepository.countByReaderEmail(readerEmail) > MAX_LOANS_PER_READER) {
+        Book book = bookService.findById(bookId);
+
+        if (loanRepository.countByReaderEmail(readerEmail) >= MAX_LOANS_PER_READER) {
             throw new LoanLimitExceededException(readerEmail, MAX_LOANS_PER_READER);
         }
-        return loan;
+        if (book.getAvailableCopies() == 0) {
+            throw new NoAvailableCopiesException("Brak wolnych egzemplarzy książki " + book.getTitle());
+        }
+
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        Loan loan = new Loan(book, readerEmail, LocalDate.now());
+        return LoanResponse.from(loanRepository.save(loan));
+
+
     }
 
     @Transactional
     public void giveBack(Long loanId) {
-        Loan loan = loanRepository.findById(loanId).get();
+        Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new LoanNotFoundException("Loan does not exist"));
         Book book = loan.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         loanRepository.delete(loan);
