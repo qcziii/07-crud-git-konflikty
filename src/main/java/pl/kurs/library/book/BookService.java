@@ -48,6 +48,8 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new BookNotFoundException("Cannot find book with id: " + id));
+        bookRepository.deleteById(book.getId());
     }
 }
