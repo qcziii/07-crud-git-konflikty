@@ -86,7 +86,7 @@ class BookControllerIT {
         Long authorId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
         BookRequest bookRequest = new BookRequest("Potop", "978-83-08-04151-8", 2, authorId);
 
-
+        // when
         MvcResult bookResult = mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookRequest)))
@@ -96,8 +96,7 @@ class BookControllerIT {
 
         Long bookId = objectMapper.readTree(bookResult.getResponse().getContentAsString()).get("id").asLong();
 
-
-        // when
+        //then
         mockMvc.perform(get("/books/{id}", bookId))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -118,9 +117,10 @@ class BookControllerIT {
 
     @Test
     void shouldCreateBookAndReturnLocationHeder() throws Exception {
+        // given
         Long authorId = createAuthor("Henryk Sienkiewicz");
         BookRequest request = new BookRequest("Potop", "978-83-08-04151-8", 2, authorId);
-
+        // when then
         MvcResult result = mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -139,7 +139,6 @@ class BookControllerIT {
     void shouldReturn409_whenIsbnAlreadyExists() throws Exception {
         // given
         Long authorId = createAuthor("Henryk Sienkiewicz");
-
         BookRequest first = new BookRequest("Potop", "978-83-08-04151-8", 2, authorId);
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -204,7 +203,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturn404_whenDeleteBookNotExist() throws Exception {
-        // given
+        // given when then
         mockMvc.perform(delete("/books/{id}", 999L))
                 .andDo(print())
                 .andExpect(status().isNotFound());

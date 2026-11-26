@@ -66,7 +66,6 @@ class AuthorControllerIT {
                 .andExpect(jsonPath("$[0].name").value(authorRequest.name()))
                 .andExpect(jsonPath("$[?(@.name == 'Jan Brzechwa')]").exists())
                 .andExpect(jsonPath("$[?(@.name == 'Jan Brzechwa')].books[*]").isEmpty());
-
     }
 
     @Test
@@ -177,8 +176,6 @@ class AuthorControllerIT {
                 .andExpect(jsonPath("$[?(@.name == 'J.R.R Tolkien')].books.length()").value(2))
                 .andExpect(jsonPath("$[?(@.name == 'J.R.R Tolkien')].books[?(@.title == 'Waldaca pierscieni')]").exists())
                 .andExpect(jsonPath("$[?(@.name == 'J.R.R Tolkien')].books[?(@.title == 'Silmarilon')]").exists());
-
-
     }
 
 

@@ -71,7 +71,6 @@ class LoanControllerIT {
 
     @Test
     void shouldCreateLoanAndReturnLocationHeader() throws Exception {
-        // given
         Long authorId = createAuthor("Henryk Sienkiewicz");
         Long bookId = createBook("Potop", "978-83-08-04151-8", 2, authorId);
         LoanRequest loanRequest = new LoanRequest(bookId, "misio@o2.pl");
@@ -92,7 +91,6 @@ class LoanControllerIT {
 
     @Test
     void shouldReturn404_whenBookDoesNotExist() throws Exception {
-        // given
         LoanRequest loanRequest = new LoanRequest(999L, "misio@o2.pl");
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,6 +103,7 @@ class LoanControllerIT {
 
     @Test
     void shouldReturn409_whenNoAvailableCopies() throws Exception {
+
         Long authorId = createAuthor("Henryk Sienkiewicz");
         Long bookId = createBook("Potop", "978-83-08-04151-8", 0, authorId);
         LoanRequest loanRequest = new LoanRequest(bookId, "misio@o2.pl");
@@ -119,6 +118,7 @@ class LoanControllerIT {
 
     @Test
     void shouldReturn409_whenLoanLimitExceeded() throws Exception {
+        // given
         Long authorId = createAuthor("Henryk Sienkiewicz");
         Long bookId = createBook("Potop", "978-83-08-04151-8", 10, authorId);  // ← dużo kopii
         LoanRequest loanRequest = new LoanRequest(bookId, "misio@o2.pl");
@@ -130,7 +130,7 @@ class LoanControllerIT {
                     .andExpect(status().isCreated());
         }
 
-        // when
+        // when then
         mockMvc.perform(post("/loans")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loanRequest)))
@@ -184,8 +184,6 @@ class LoanControllerIT {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
-
 
     private Long createBook(String title, String isbn, int copies, Long authorId) throws Exception {
         BookRequest request = new BookRequest(title, isbn, copies, authorId);
