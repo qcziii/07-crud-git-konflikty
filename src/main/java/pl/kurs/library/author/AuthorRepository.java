@@ -7,11 +7,6 @@ import java.util.List;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-
-   // @Override
-   // @EntityGraph(attributePaths = "books")
-   // List<Author> findAll();
-
     @Override
     @Query(value = """
         SELECT DISTINCT a FROM Author a

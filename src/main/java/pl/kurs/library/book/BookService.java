@@ -18,15 +18,15 @@ public class BookService {
         this.authorService = authorService;
     }
 
-    public List<BookShortResponse> findAll() {
+    public List<BookResponse> findAll() {
         return bookRepository.findAll()
                 .stream()
-                .map(BookShortResponse::from)
+                .map(BookResponse::from)
                 .toList();
     }
 
-    public BookShortResponse findShortResponseBookById(Long id) {
-        return BookShortResponse.from(findById(id));
+    public BookResponse findShortResponseBookById(Long id) {
+        return BookResponse.from(findById(id));
     }
 
     public Book findById(Long id) {
@@ -48,7 +48,6 @@ public class BookService {
 
     @Transactional
     public void delete(Long id) {
-        Book book = findById(id);
-        bookRepository.deleteById(book.getId());
+        bookRepository.deleteById(id);
     }
 }

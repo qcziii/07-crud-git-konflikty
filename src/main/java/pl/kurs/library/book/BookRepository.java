@@ -1,6 +1,5 @@
 package pl.kurs.library.book;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,10 +8,6 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByIsbn(String isbn);
-
-    // @Override
-    // @EntityGraph(attributePaths = "author")
-    //List<Book> findAll();
 
     @Override
     @Query(value = """

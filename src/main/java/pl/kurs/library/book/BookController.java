@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,19 +26,24 @@ public class BookController {
     }
 
     @GetMapping
-    public List<BookShortResponse> getAll() {
+    public List<BookResponse> getAll() {
         return bookService.findAll();
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookShortResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<BookResponse> getById(@PathVariable Long id) {
         return new ResponseEntity<>(bookService.findShortResponseBookById(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<BookResponse> create(@Valid @RequestBody BookRequest request) {
-        return new ResponseEntity<>(bookService.create(request), HttpStatus.CREATED);
+        BookResponse response = bookService.create(request);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
     @DeleteMapping("/{id}")

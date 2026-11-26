@@ -6,7 +6,6 @@ import pl.kurs.library.book.Book;
 import pl.kurs.library.book.BookService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,8 +28,8 @@ public class LoanService {
                 .toList();
     }
 
-    @Transactional
-    public LoanResponse borrow(Long bookId, String readerEmail) throws LoanLimitExceededException {
+    @Transactional(rollbackFor = LoanLimitExceededException.class)
+    public LoanResponse borrow(Long bookId, String readerEmail) {
 
         Book book = bookService.findById(bookId);
 

@@ -2,6 +2,7 @@ package pl.kurs.library.common;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,78 +25,33 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle(Exception e) {
+    public Map<String, String> handle(Exception e, HttpStatusCode statusCode) {
         return Map.of("error", "wystąpił nieoczekiwany błąd");
     }
 
-    @ExceptionHandler(DuplicateIsbnException.class)
-    public ResponseEntity<ErrorMessage> duplicateIsbnException(DuplicateIsbnException e, HttpServletRequest request) {
-        return new ResponseEntity<>(ErrorMessage.builder()
-                .dateTime(LocalDateTime.now())
-                .code(CONFLICT.value())
-                .status(CONFLICT.getReasonPhrase())
-                .message(e.getMessage())
-                .uri(request.getRequestURI())
-                .method(request.getMethod())
-                .build(), CONFLICT);
+    @ExceptionHandler({DuplicateIsbnException.class,
+            NoAvailableCopiesException.class,
+            LoanLimitExceededException.class})
+
+    public ResponseEntity<ErrorMessage> conflict(RuntimeException e, HttpServletRequest request) {
+        return error(CONFLICT, e.getMessage(), request);
     }
 
-
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<ErrorMessage> bookNotFoundException(BookNotFoundException e, HttpServletRequest request) {
-        return new ResponseEntity<>(ErrorMessage.builder()
-                .dateTime(LocalDateTime.now())
-                .code(NOT_FOUND.value())
-                .status(NOT_FOUND.getReasonPhrase())
-                .message(e.getMessage())
-                .uri(request.getRequestURI())
-                .method(request.getMethod())
-                .build(), NOT_FOUND);
+    @ExceptionHandler({AuthorDoesNotExistException.class,
+            LoanNotFoundException.class,
+            BookNotFoundException.class})
+    public ResponseEntity<ErrorMessage> notFound(RuntimeException e, HttpServletRequest request) {
+        return error(NOT_FOUND, e.getMessage(), request);
     }
 
-    @ExceptionHandler(NoAvailableCopiesException.class)
-    public ResponseEntity<ErrorMessage> noAvailableCopiesException(NoAvailableCopiesException e, HttpServletRequest request) {
+    private ResponseEntity<ErrorMessage> error(HttpStatus status, String message, HttpServletRequest request) {
         return new ResponseEntity<>(ErrorMessage.builder()
                 .dateTime(LocalDateTime.now())
-                .code(CONFLICT.value())
-                .status(CONFLICT.getReasonPhrase())
-                .message(e.getMessage())
+                .code(status.value())
+                .status(status.getReasonPhrase())
+                .message(message)
                 .uri(request.getRequestURI())
                 .method(request.getMethod())
-                .build(), CONFLICT);
-    }
-
-    @ExceptionHandler(LoanLimitExceededException.class)
-    public ResponseEntity<ErrorMessage> loanLimitExceededException(LoanLimitExceededException e, HttpServletRequest request) {
-        return new ResponseEntity<>(ErrorMessage.builder()
-                .dateTime(LocalDateTime.now())
-                .code(CONFLICT.value())
-                .status(CONFLICT.getReasonPhrase())
-                .message(e.getMessage())
-                .uri(request.getRequestURI())
-                .method(request.getMethod())
-                .build(), CONFLICT);
-    }
-
-    @ExceptionHandler(AuthorDoesNotExistException.class)
-    public ResponseEntity<ErrorMessage> authorDoesNotExistException(AuthorDoesNotExistException e, HttpServletRequest request) {
-        return new ResponseEntity<>(ErrorMessage.builder()
-                .dateTime(LocalDateTime.now())
-                .code(NOT_FOUND.value())
-                .status(NOT_FOUND.getReasonPhrase())
-                .message(e.getMessage())
-                .uri(request.getRequestURI())
-                .method(request.getMethod())
-                .build(), NOT_FOUND);
-    } @ExceptionHandler(LoanNotFoundException.class)
-    public ResponseEntity<ErrorMessage> loanNotFoundException(LoanNotFoundException e, HttpServletRequest request) {
-        return new ResponseEntity<>(ErrorMessage.builder()
-                .dateTime(LocalDateTime.now())
-                .code(NOT_FOUND.value())
-                .status(NOT_FOUND.getReasonPhrase())
-                .message(e.getMessage())
-                .uri(request.getRequestURI())
-                .method(request.getMethod())
-                .build(), NOT_FOUND);
+                .build(), status);
     }
 }

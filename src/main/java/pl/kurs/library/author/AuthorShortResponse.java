@@ -7,7 +7,7 @@ import java.util.List;
 public record AuthorShortResponse (
         Long id,
         String name,
-        List<BookShortResponse> bookShortResponseList
+        List<BookShortResponse> books
 ){
 
     public static AuthorShortResponse from(Author author) {
