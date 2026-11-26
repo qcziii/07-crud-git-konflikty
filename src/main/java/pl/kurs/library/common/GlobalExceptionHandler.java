@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle(Exception e, HttpStatusCode statusCode) {
+    public Map<String, String> handle(Exception e) {
         return Map.of("error", "wystąpił nieoczekiwany błąd");
     }
 

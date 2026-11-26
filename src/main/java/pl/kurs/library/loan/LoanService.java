@@ -1,6 +1,7 @@
 package pl.kurs.library.loan;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.kurs.library.book.Book;
 import pl.kurs.library.book.BookService;
@@ -28,7 +29,7 @@ public class LoanService {
                 .toList();
     }
 
-    @Transactional(rollbackFor = LoanLimitExceededException.class)
+    @Transactional(rollbackFor = LoanLimitExceededException.class, isolation = Isolation.SERIALIZABLE)
     public LoanResponse borrow(Long bookId, String readerEmail) {
 
         Book book = bookService.findById(bookId);
