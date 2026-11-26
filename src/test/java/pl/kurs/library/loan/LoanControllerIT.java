@@ -120,7 +120,7 @@ class LoanControllerIT {
     void shouldReturn409_whenLoanLimitExceeded() throws Exception {
         // given
         Long authorId = createAuthor("Henryk Sienkiewicz");
-        Long bookId = createBook("Potop", "978-83-08-04151-8", 10, authorId);  // ← dużo kopii
+        Long bookId = createBook("Potop", "978-83-08-04151-8", 10, authorId);
         LoanRequest loanRequest = new LoanRequest(bookId, "misio@o2.pl");
 
         for (int i = 0; i < 3; i++) {
@@ -183,6 +183,18 @@ class LoanControllerIT {
         mockMvc.perform(delete("/loans/{id}", 999L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn500AndNotExposeDetails_whenUnexpectedError() throws Exception {
+        // given when then
+        mockMvc.perform(get("/loans/r"))
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error").value("Internal server error"))
+                .andExpect(jsonPath("$.trace").doesNotExist());
+
     }
 
     private Long createBook(String title, String isbn, int copies, Long authorId) throws Exception {

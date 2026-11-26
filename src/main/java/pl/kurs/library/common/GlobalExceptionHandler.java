@@ -1,17 +1,18 @@
 package pl.kurs.library.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.kurs.library.exception.AuthorNotFoundException;
 import pl.kurs.library.exception.BookAvailableException;
 import pl.kurs.library.exception.BookNotFoundException;
 import pl.kurs.library.exception.DuplicateIsbnException;
-import pl.kurs.library.exception.LoanNotFoundException;
 import pl.kurs.library.exception.LoanLimitExceededException;
+import pl.kurs.library.exception.LoanNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,12 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle(Exception e) {
-        return Map.of("error", String.valueOf(e.getMessage()));
+    public ResponseEntity<Map<String, String>> handle(Exception ex) {
+        log.error("Unexpected error", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
     }
 
     @ExceptionHandler(DuplicateIsbnException.class)
