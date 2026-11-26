@@ -14,12 +14,17 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public List<Author> findAll() {
-        return authorRepository.findAll();
+    public List<AuthorShortResponse> findAll() {
+        return authorRepository.findAll()
+                .stream()
+                .map(AuthorShortResponse::from)
+                .toList();
     }
 
     public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+        return authorRepository.findById(id)
+                .orElseThrow(() ->
+                        new AuthorDoesNotExistException("Author does not exist: " + id));
     }
 
     @Transactional
