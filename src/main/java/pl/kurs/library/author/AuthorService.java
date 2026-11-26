@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -18,8 +19,8 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    public Author findById(Long id) {
-        return authorRepository.findById(id).get();
+    public Optional<Author> findById(Long id) {
+        return authorRepository.findById(id);
     }
 
     @Transactional
