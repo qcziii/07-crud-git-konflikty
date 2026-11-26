@@ -28,7 +28,6 @@ public class BookController {
     @GetMapping
     public List<BookResponse> getAll() {
         return bookService.findAll();
-
     }
 
     @GetMapping("/{id}")
