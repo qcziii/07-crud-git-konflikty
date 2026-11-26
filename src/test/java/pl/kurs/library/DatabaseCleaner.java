@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-
 public class DatabaseCleaner implements TestExecutionListener {
-
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -25,7 +23,6 @@ public class DatabaseCleaner implements TestExecutionListener {
                 .map(EntityType::getName)
                 .map(this::toSnakeCase)
                 .toList();
-
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         try {
